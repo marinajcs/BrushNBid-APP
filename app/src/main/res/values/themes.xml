@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.BrushNBid" parent="android:Theme.Material.Light.NoActionBar" >
+    <!-- Splash Screen -->
+    <item name="android:windowSplashScreenBackground">@color/main_color</item>
+    <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo_placeholder</item>
+    <item name="android:windowSplashScreenIconBackgroundColor">@null</item>
 
-    <style name="Theme.BrushNBid" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- General -->
+    <item name="android:windowBackground">@color/main_color</item>
+    </style>
 </resources>

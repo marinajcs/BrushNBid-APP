@@ -29,13 +29,15 @@ fun FirstStartScreen(onContinue: () -> Unit) {
                 text = "Subasta,\npuja y gana:",
                 fontSize = 55.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                lineHeight = 58.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "da valor a tu arte y llévatelo al mejor\npostor",
                 fontSize = 30.sp,
-                color = colorResource(id = R.color.main_color)
+                color = colorResource(id = R.color.main_color),
+                lineHeight = 33.sp
             )
             Spacer(modifier = Modifier.height(24.dp))
 

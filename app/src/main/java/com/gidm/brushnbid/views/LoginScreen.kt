@@ -49,7 +49,8 @@ fun LoginScreen(
                 text = "Regístrate o inicia sesión",
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                lineHeight = 39.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(

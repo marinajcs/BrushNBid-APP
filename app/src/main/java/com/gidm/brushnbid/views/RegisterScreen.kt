@@ -130,8 +130,8 @@ fun InputField(
             focusedLabelColor = colorResource(id = R.color.main_color),
             unfocusedLabelColor = colorResource(id = R.color.main_color),
             cursorColor = Color.Black,
-            focusedTextColor = colorResource(id = R.color.main_color),
-            unfocusedTextColor = colorResource(id = R.color.main_color)
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
         )
     )
 }

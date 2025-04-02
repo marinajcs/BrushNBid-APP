@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun RegisterScreen(
     onBack: () -> Unit,
@@ -33,6 +32,8 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var country by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
+
+    val isPasswordValid = password.length >= 8
 
     Column(
         modifier = Modifier
@@ -64,13 +65,15 @@ fun RegisterScreen(
         InputField("Dirección de e-mail", email) { email = it }
         InputField("Contraseña", password, isPassword = true) { password = it }
 
-        Text(
-            text = "La contraseña debe tener al menos 8 caracteres.",
-            fontSize = 12.sp,
-            lineHeight = 15.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(vertical = 4.dp)
-        )
+        if (!isPasswordValid) {
+            Text(
+                text = "La contraseña debe tener al menos 8 caracteres.",
+                fontSize = 12.sp,
+                lineHeight = 15.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
 
         InputField("País", country) { country = it }
         InputField("Dirección", address) { address = it }
@@ -88,15 +91,15 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            enabled = allFieldsFilled,
+            enabled = allFieldsFilled && isPasswordValid,  // Deshabilitar el botón si la contraseña no es válida
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
+                containerColor = if (allFieldsFilled && isPasswordValid) Color.Black else colorResource(id = R.color.dark_gray)
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
                 text = "Subasta tu arte",
-                color = if (allFieldsFilled) Color.White else Color.Black
+                color = if (allFieldsFilled && isPasswordValid) Color.White else Color.Black
             )
         }
     }
@@ -141,3 +144,4 @@ fun RegisterScreenPreview() {
         onSubmit = {}
     )
 }
+

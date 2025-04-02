@@ -9,7 +9,8 @@ import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.LoginScreen
-import kotlinx.coroutines.CoroutineScope
+import com.gidm.brushnbid.views.MainLoginScreen
+import com.gidm.brushnbid.views.RegisterScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -26,18 +27,49 @@ fun AppNavigation(
                 onContinue = {
                     scope.launch {
                         UserPreferences(context).setFirstLaunchDone()
-                        navController.navigate("login") {
+                        navController.navigate("mainLogin") {
                             popUpTo("firstStart") { inclusive = true }
                         }
                     }
                 }
             )
         }
-        composable("login") {
-            LoginScreen(
-                onCreateAccount = { /* TODO: navegación a registro */ },
-                onLogin = { /* TODO: navegación a login form */ }
+
+        composable("mainLogin") {
+            MainLoginScreen(
+                onCreateAccount = {
+                    navController.navigate("register") // Navegar a registro
+                },
+                onLogin = {
+                    navController.navigate("login")
+                }
             )
         }
+
+        composable("register") {
+            RegisterScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSubmit = {
+
+                }
+            )
+        }
+
+        composable("login") {
+            LoginScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSubmit = {
+
+                },
+                onForgotPassword = {
+
+                }
+            )
+        }
+
     }
 }

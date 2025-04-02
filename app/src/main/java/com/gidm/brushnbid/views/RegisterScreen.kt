@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -54,6 +53,7 @@ fun RegisterScreen(
         Text(
             text = "Únete a BrushNbid",
             fontSize = 24.sp,
+            lineHeight = 27.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
@@ -67,6 +67,7 @@ fun RegisterScreen(
         Text(
             text = "La contraseña debe tener al menos 8 caracteres.",
             fontSize = 12.sp,
+            lineHeight = 15.sp,
             color = Color.Black,
             modifier = Modifier.padding(vertical = 4.dp)
         )

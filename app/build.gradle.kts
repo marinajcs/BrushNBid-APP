@@ -60,4 +60,5 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.6.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 }

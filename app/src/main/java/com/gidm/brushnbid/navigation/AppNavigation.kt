@@ -36,6 +36,10 @@ fun AppNavigation(
         isFirstTime.value = UserPreferences(context).isFirstLaunch()
     }
 
+    if (isFirstTime.value == null) {
+        return
+    }
+
     NavHost(navController = navController, startDestination = if (isFirstTime.value == true) "firstStart" else "mainLogin") {
 
         // Pantalla de primer inicio

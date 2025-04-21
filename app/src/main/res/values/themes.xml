@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.BrushNBid" parent="android:Theme.Material.Light.NoActionBar" >
         <item name="android:windowSplashScreenBackground">@color/main_color</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo_gidm</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_logo_round</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@null</item>
         <item name="android:windowBackground">@color/main_color</item>
     </style>

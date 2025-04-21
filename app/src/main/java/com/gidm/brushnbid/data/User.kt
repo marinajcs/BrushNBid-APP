@@ -7,5 +7,6 @@ data class User(
     var password: String,
     var pais: String,
     var direccion: String,
-    var rol: Rol
+    var rol: Rol,
+    var subastasSeguidas: List<Subasta> = listOf()
 )

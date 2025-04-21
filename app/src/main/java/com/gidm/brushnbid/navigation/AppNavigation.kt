@@ -33,11 +33,11 @@ fun AppNavigation(
         isFirstTime.value = UserPreferences(context).isFirstLaunch()
     }
 
-    // Si aún no se ha cargado la información de isFirstTime, no mostrar nada (pantalla en blanco o cargando)
+    /* Si aún no se ha cargado la información de isFirstTime, no mostrar nada (pantalla en blanco o cargando)
     if (isFirstTime.value == null) {
-        // Aquí podrías mostrar una pantalla de carga o simplemente no mostrar nada hasta que se determine
-        return // O mostrar un Composable de carga
+        return
     }
+    */
 
     NavHost(navController = navController, startDestination = if (isFirstTime.value == true) "firstStart" else "mainLogin") {
 

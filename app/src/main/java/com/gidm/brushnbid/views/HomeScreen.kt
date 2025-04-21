@@ -22,11 +22,37 @@ import coil.compose.rememberAsyncImagePainter
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
+import com.gidm.brushnbid.data.Subasta
 
 @Composable
 fun SubastasMainScreen() {
     var selectedTab by remember { mutableStateOf("activas") }
     var selectedItem by remember { mutableStateOf(BottomNavItem.HOME) }
+    var subastas by remember { mutableStateOf(listOf<Subasta>()) } // Lista de subastas
+
+    // Simulación de subastas activas y seguidas
+    val subastasActivas = listOf(
+        Subasta("Serigrafía orca", "Paula Butrón", "https://storage.googleapis.com/pod_public/1300/234443.jpg"),
+        Subasta("Pintura abstracta", "Juan Pérez", "https://storage.googleapis.com/pod_public/1300/234444.jpg")
+    )
+
+    val subastasSeguidas = listOf(
+        Subasta("Escultura moderna", "Carlos Ruiz", "https://storage.googleapis.com/pod_public/1300/234445.jpg"),
+        Subasta("Retrato clásico", "Ana Martínez", "https://storage.googleapis.com/pod_public/1300/234446.jpg")
+    )
+
+    val changeSubastas = { type: String ->
+        subastas = when (type) {
+            "activas" -> subastasActivas
+            "seguidas" -> subastasSeguidas
+            else -> listOf()
+        }
+    }
+
+    // Establecer las subastas iniciales
+    LaunchedEffect(Unit) {
+        changeSubastas("activas")
+    }
 
     Scaffold(
         bottomBar = {
@@ -46,7 +72,7 @@ fun SubastasMainScreen() {
                 .fillMaxSize()
                 .background(colorResource(id = R.color.app_background)),
             contentPadding = PaddingValues(bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
 
             item {
@@ -78,19 +104,21 @@ fun SubastasMainScreen() {
                 ) {
                     FilterButton("Subastas activas", selected = selectedTab == "activas") {
                         selectedTab = "activas"
+                        subastas = subastasActivas
                     }
                     FilterButton("Subastas seguidas", selected = selectedTab == "seguidas") {
                         selectedTab = "seguidas"
+                        subastas = subastasSeguidas
                     }
                 }
             }
 
             // Lista de subastas (simulada)
-            items(5) {
+            items(subastas) { subasta ->
                 SubastaCard(
-                    title = "Serigrafía orca",
-                    author = "Paula Butrón",
-                    imageUrl = "https://storage.googleapis.com/pod_public/1300/234443.jpg"
+                    title = subasta.obra,
+                    author = subasta.vendedor,
+                    imageUrl = subasta.image
                 )
             }
         }
@@ -143,6 +171,14 @@ fun SubastaCard(title: String, author: String, imageUrl: String) {
                 .clip(RoundedCornerShape(16.dp))
                 .height(240.dp)
         )
+    }
+}
+
+@Composable
+fun ScrollToTop(scrollState: LazyListState) {
+    // Aquí ejecutamos la acción suspendida de desplazamiento hacia arriba
+    LaunchedEffect(Unit) {
+        scrollState.animateScrollToItem(0)
     }
 }
 

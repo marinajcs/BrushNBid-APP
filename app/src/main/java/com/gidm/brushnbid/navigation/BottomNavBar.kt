@@ -1,5 +1,6 @@
 package com.gidm.brushnbid.navigation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gidm.brushnbid.R
@@ -41,7 +43,13 @@ fun BottomNavBar(
             NavigationBarItem(
                 selected = selectedItem == BottomNavItem.AUCTIONS,
                 onClick = onAuctionsClick,
-                icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Subastas") }
+                icon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.gavel),
+                        contentDescription = "Subastas",
+                        modifier = Modifier.size(31.dp)
+                    )
+                }
             )
             Spacer(modifier = Modifier.weight(1f)) // espacio para el FAB
 

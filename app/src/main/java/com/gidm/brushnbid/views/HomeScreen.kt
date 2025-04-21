@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
@@ -25,9 +27,8 @@ import com.gidm.brushnbid.navigation.BottomNavItem
 import com.gidm.brushnbid.data.Subasta
 
 @Composable
-fun SubastasMainScreen() {
+fun SubastasMainScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf("activas") }
-    var selectedItem by remember { mutableStateOf(BottomNavItem.HOME) }
     var subastas by remember { mutableStateOf(listOf<Subasta>()) } // Lista de subastas
 
     // Simulación de subastas activas y seguidas
@@ -57,12 +58,12 @@ fun SubastasMainScreen() {
     Scaffold(
         bottomBar = {
             BottomNavBar(
-                selectedItem = selectedItem,
-                onHomeClick = { selectedItem = BottomNavItem.HOME },
-                onAuctionsClick = { selectedItem = BottomNavItem.AUCTIONS },
+                selectedItem = BottomNavItem.HOME,
+                onHomeClick = { navController.navigate("home") },
+                onAuctionsClick = { navController.navigate("auctions") },
                 onCreateClick = { /* lógica para crear */ },
-                onNotificationsClick = { selectedItem = BottomNavItem.NOTIFICATIONS },
-                onProfileClick = { selectedItem = BottomNavItem.PROFILE }
+                onNotificationsClick = { navController.navigate("notifications") },
+                onProfileClick = { navController.navigate("profile") }
             )
         }
     ) { innerPadding ->
@@ -174,16 +175,9 @@ fun SubastaCard(title: String, author: String, imageUrl: String) {
     }
 }
 
-@Composable
-fun ScrollToTop(scrollState: LazyListState) {
-    // Aquí ejecutamos la acción suspendida de desplazamiento hacia arriba
-    LaunchedEffect(Unit) {
-        scrollState.animateScrollToItem(0)
-    }
-}
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SubastasMainScreenPreview() {
-    SubastasMainScreen()
+    val navController = rememberNavController()
+    SubastasMainScreen(navController)
 }

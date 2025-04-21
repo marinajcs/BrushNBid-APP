@@ -14,6 +14,9 @@ import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
 import com.gidm.brushnbid.views.LoginScreen
+import com.gidm.brushnbid.views.MyAuctionsScreen
+import com.gidm.brushnbid.views.NotificationScreen
+import com.gidm.brushnbid.views.ProfileScreen
 import com.gidm.brushnbid.views.SubastasMainScreen
 import kotlinx.coroutines.launch
 
@@ -32,12 +35,6 @@ fun AppNavigation(
     LaunchedEffect(Unit) {
         isFirstTime.value = UserPreferences(context).isFirstLaunch()
     }
-
-    /* Si aún no se ha cargado la información de isFirstTime, no mostrar nada (pantalla en blanco o cargando)
-    if (isFirstTime.value == null) {
-        return
-    }
-    */
 
     NavHost(navController = navController, startDestination = if (isFirstTime.value == true) "firstStart" else "mainLogin") {
 
@@ -95,8 +92,19 @@ fun AppNavigation(
         }
 
         composable("home") {
-            SubastasMainScreen()
+            SubastasMainScreen(navController)
         }
 
+        composable("auctions") {
+            MyAuctionsScreen(navController)
+        }
+
+        composable("notifications") {
+            NotificationScreen(navController)
+        }
+
+        composable("profile") {
+            ProfileScreen(navController)
+        }
     }
 }

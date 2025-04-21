@@ -88,7 +88,7 @@ fun SubastasMainScreen() {
             // Lista de subastas (simulada)
             items(5) {
                 SubastaCard(
-                    title = "Serigrafía floral",
+                    title = "Serigrafía orca",
                     author = "Paula Butrón",
                     imageUrl = "https://storage.googleapis.com/pod_public/1300/234443.jpg"
                 )

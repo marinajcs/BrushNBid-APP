@@ -14,6 +14,7 @@ import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
 import com.gidm.brushnbid.views.LoginScreen
+import com.gidm.brushnbid.views.SubastasMainScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -73,7 +74,7 @@ fun AppNavigation(
                     navController.popBackStack()
                 },
                 onSubmit = {
-
+                    navController.navigate("login")
                 }
             )
         }
@@ -85,12 +86,16 @@ fun AppNavigation(
                     navController.popBackStack()
                 },
                 onSubmit = {
-
+                    navController.navigate("home")
                 },
                 onForgotPassword = {
 
                 }
             )
+        }
+
+        composable("home") {
+            SubastasMainScreen()
         }
 
     }

@@ -1,10 +1,12 @@
 package com.gidm.brushnbid.data
 
+import com.google.gson.annotations.SerializedName
+
 data class Obra(
-    var titulo: String,
-    var autoria: User,          // Relación con Usuario en lugar de String
-    var propiedad: User,         // Quien la tiene actualmente
-    var tipo: TipoObra,
-    var imagen: String,            // URL o ruta de la imagen
-    var descripcion: String
+    val titulo: String,
+    @SerializedName("autoria_id") val autoriaId: Int,          // Relación con Usuario en lugar de String
+    @SerializedName("propiedad_id") val propiedadId: Int,         // Quien la tiene actualmente
+    val tipo: String,
+    val descripcion: String,
+    val imagen: String            // URL o ruta de la imagen
 )

@@ -1,5 +1,8 @@
+package com.gidm.brushnbid.controllers
+/*
 package com.gidm.brushnbid.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,29 +28,43 @@ import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 import com.gidm.brushnbid.data.Subasta
-import com.gidm.brushnbid.data.SubastaSummary
+import com.gidm.brushnbid.api.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+private val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
 @Composable
 fun SubastasMainScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf("activas") }
-    var subastas: List<SubastaSummary> by remember { mutableStateOf(listOf<SubastaSummary>()) } // Lista de subastas
+    var subastas by remember { mutableStateOf<List<Subasta>>(emptyList()) } // Lista de subastas
+    var subastasActivas = listOf<Subasta>()
 
-    // Simulación de subastas activas y seguidas
+    /* Simulación de subastas activas y seguidas
     val subastasActivas = listOf(
-        SubastaSummary("Serigrafía orca", "Paula Butrón", "https://storage.googleapis.com/pod_public/1300/234443.jpg"),
-        SubastaSummary("Pintura abstracta", "Juan Pérez", "https://storage.googleapis.com/pod_public/1300/234444.jpg")
+        Subasta("Serigrafía orca", "Paula Butrón", "https://storage.googleapis.com/pod_public/1300/234443.jpg"),
+        Subasta("Pintura abstracta", "Juan Pérez", "https://storage.googleapis.com/pod_public/1300/234444.jpg")
+    )
+    */
+
+
+
+    var subastasSeguidas = listOf(
+        Subasta(
+            3, 6, 1, 0.0, 0.0, null, "10-04-25", null, false
+        ),
+        Subasta(
+            4, 5, 2, 10.0, 0.0, null, "15-05-25", null, false
+        ),
     )
 
-    val subastasSeguidas = listOf(
-        SubastaSummary("Escultura moderna", "Carlos Ruiz", "https://storage.googleapis.com/pod_public/1300/234445.jpg"),
-        SubastaSummary("Retrato clásico", "Ana Martínez", "https://storage.googleapis.com/pod_public/1300/234446.jpg")
-    )
 
     val changeSubastas = { type: String ->
         subastas = when (type) {
             "activas" -> subastasActivas
             "seguidas" -> subastasSeguidas
-            else -> listOf()
+            else -> emptyList()
         }
     }
 
@@ -176,9 +193,12 @@ fun SubastaCard(title: String, author: String, imageUrl: String) {
     }
 }
 
+
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SubastasMainScreenPreview() {
     val navController = rememberNavController()
     SubastasMainScreen(navController)
 }
+*/

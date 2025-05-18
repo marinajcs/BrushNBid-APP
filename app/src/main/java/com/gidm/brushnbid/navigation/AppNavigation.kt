@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
+import com.gidm.brushnbid.views.AddMenuScreen
 import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
@@ -109,6 +110,10 @@ fun AppNavigation(
 
         composable("profile") {
             ProfileScreen(navController)
+        }
+
+        composable("addMenu") {
+            AddMenuScreen(navController)
         }
     }
 }

@@ -10,3 +10,13 @@ data class Obra(
     val descripcion: String,
     val imagen: String            // URL o ruta de la imagen
 )
+
+data class ObraSummary(
+    val titulo: String,
+    val estado: Estado,
+    val imagen: Int
+)
+
+enum class Estado{
+    ACTIVA, VENDIDA
+}

@@ -40,7 +40,19 @@ fun NotificationScreen(navController: NavController) {
             icon = Icons.Default.Circle,
             title = "BrushNbid",
             description = "Consejos para transacciones seguras...",
-            message = ""
+            message = "Marina Carranza, tu seguridad es nuestra prioridad principal. Por eso, nos gustaría compartir algunos consejos para que uses BrushNbid de forma segura.\n" +
+                    "\n" +
+                    "\uD83D\uDD10 No compartas tu dirección de e-mail, número de teléfono o información de pago con otros miembros. \n" +
+                    "\n" +
+                    "\uD83D\uDC5B Paga a través de BrushNbid. Cuando usas el botón “Comprar”, te beneficias de las medidas que tenemos implantadas para proteger tus datos personales. \n" +
+                    "\n" +
+                    "❗ Denuncia cualquier actividad sospechosa que detectes.\n" +
+                    "\n" +
+                    "\uD83D\uDED1 No abras enlaces, e-mails, documentos adjuntos o mensajes de texto (SMS) sospechosos. \n" +
+                    "\n" +
+                    "Es posible que haya estafadores que intenten ponerse en contacto con miembros de BrushNbid para solicitar datos personales, como la dirección de e-mail o el número de teléfono, e incluso para hacerse pasar por el equipo de BrushNbid.\n" +
+                    "\n" +
+                    "Recuerda: BrushNbid nunca te pedirá que completes un pago fuera de la plataforma ni te solicitará información por mensaje privado o email. \n"
         ),
         Notificacion(
             icon = Icons.Default.Shield,
@@ -74,8 +86,7 @@ fun NotificationScreen(navController: NavController) {
                 colorResource(R.color.light_blue),
                 R.drawable.mi_buzon,
                 "Mi",
-                "Buzón",
-                ""
+                "Buzón"
             )
 
             Spacer(modifier = Modifier.height(24.dp))

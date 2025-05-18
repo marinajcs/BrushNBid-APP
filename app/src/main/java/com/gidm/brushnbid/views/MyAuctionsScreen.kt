@@ -66,7 +66,7 @@ fun MyAuctionsScreen(navController: NavController) {
                 .background(colorResource(R.color.app_background))
 
         ) {
-            HeaderImage(colorResource(R.color.main_color), R.drawable.mis_subastas, "Mis", "Subastas", "")
+            HeaderImage(colorResource(R.color.main_color), R.drawable.mis_subastas, "Mis", "Subastas")
 
             Row(
                 modifier = Modifier

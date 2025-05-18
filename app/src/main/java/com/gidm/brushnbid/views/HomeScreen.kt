@@ -2,6 +2,7 @@ package com.gidm.brushnbid.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -57,6 +59,7 @@ fun SubastasMainScreen(navController: NavController) {
     }
 
     Scaffold(
+        containerColor = colorResource(id = R.color.app_background),
         bottomBar = {
             BottomNavBar(
                 selectedItem = BottomNavItem.HOME,
@@ -91,10 +94,16 @@ fun SubastasMainScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = colorResource(id = R.color.main_light_color),
+                        unfocusedContainerColor = colorResource(id = R.color.main_light_color),
                         focusedBorderColor = colorResource(id = R.color.main_color),
-                        unfocusedBorderColor = colorResource(id = R.color.main_color)
+                        unfocusedBorderColor = colorResource(id = R.color.main_color),
+                        focusedTextColor = colorResource(id = R.color.main_color),
+                        unfocusedTextColor = colorResource(id = R.color.main_color),
+                        focusedLeadingIconColor = colorResource(id = R.color.main_color),
+                        unfocusedLeadingIconColor = colorResource(id = R.color.main_color),
+                        focusedPlaceholderColor = colorResource(id = R.color.main_color),
+                        unfocusedPlaceholderColor = colorResource(id = R.color.main_color)
                     )
                 )
             }
@@ -134,10 +143,15 @@ fun FilterButton(text: String, selected: Boolean, onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(11.dp))
+            .border(
+                1.dp,
+                color = colorResource(R.color.main_color),
+                shape = RoundedCornerShape(11.dp)
+            )
             .background(backgroundColor)
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp, vertical = 14.dp)
     ) {
         Text(text = text, color = textColor, fontSize = 14.sp, fontWeight = FontWeight.Medium)
     }

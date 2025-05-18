@@ -1,25 +1,57 @@
 package com.gidm.brushnbid.views
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gidm.brushnbid.R
+import com.gidm.brushnbid.data.Notificacion
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 
 @Composable
 fun NotificationScreen(navController: NavController) {
+    val notificaciones = listOf(
+        Notificacion(
+            icon = Icons.Default.Circle,
+            title = "BrushNbid",
+            description = "Consejos para transacciones seguras...",
+            message = ""
+        ),
+        Notificacion(
+            icon = Icons.Default.Shield,
+            title = "Confirmación de cuenta",
+            description = "Para verificar el número proporcionado...",
+            message = ""
+        )
+    )
 
     Scaffold(
+        containerColor = colorResource(id = R.color.app_background),
         bottomBar = {
             BottomNavBar(
                 selectedItem = BottomNavItem.NOTIFICATIONS,
@@ -31,11 +63,73 @@ fun NotificationScreen(navController: NavController) {
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Text("Pantalla de notificaciones")
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(colorResource(R.color.app_background))
+
+        ) {
+            HeaderImage(
+                colorResource(R.color.light_blue),
+                R.drawable.mi_buzon,
+                "Mi",
+                "Buzón",
+                ""
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Column(modifier = Modifier.padding(start = 30.dp)) {
+                notificaciones.forEachIndexed { index, item ->
+                    NotificationCard(item)
+
+                    if (index < notificaciones.lastIndex) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(start = 44.dp, top = 4.dp),
+                            color = Color.LightGray,
+                            thickness = 1.dp
+                        )
+                    }
+                }
+            }
+
+
         }
     }
 }
+
+@Composable
+fun NotificationCard(item: Notificacion) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = item.icon,
+            contentDescription = null,
+            modifier = Modifier
+                .size(32.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            Text(
+                text = item.title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = item.description,
+                fontSize = 14.sp,
+                color = Color.DarkGray
+            )
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

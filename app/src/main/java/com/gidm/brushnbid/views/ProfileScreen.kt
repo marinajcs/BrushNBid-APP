@@ -10,9 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 
@@ -21,6 +23,7 @@ fun ProfileScreen(navController: NavController) {
     var selectedItem by remember { mutableStateOf(BottomNavItem.NOTIFICATIONS) }
 
     Scaffold(
+        containerColor = colorResource(id = R.color.app_background),
         bottomBar = {
             BottomNavBar(
                 selectedItem = BottomNavItem.PROFILE,

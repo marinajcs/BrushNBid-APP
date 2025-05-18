@@ -37,24 +37,17 @@ fun BottomNavBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .shadow(
-                    elevation = 12.dp,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                    ambientColor = Color.Black,
-                    spotColor = Color.Black,
-                    clip = false
-                )
-                .background(colorResource(id = R.color.app_background))
+                .background(colorResource(id = R.color.main_light_color))
                 .align(Alignment.BottomCenter)
         )
 
         Box(
             modifier = Modifier
-                .size(72.dp)
+                .size(80.dp)
                 .align(Alignment.TopCenter)
                 .offset(y = (-18).dp)
                 .background(
-                    color = colorResource(id = R.color.app_background),
+                    color = colorResource(id = R.color.main_light_color),
                     shape = CircleShape
                 )
 

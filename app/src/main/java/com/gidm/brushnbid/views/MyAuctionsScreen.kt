@@ -47,6 +47,7 @@ fun MyAuctionsScreen(navController: NavController) {
     }
 
     Scaffold(
+        containerColor = colorResource(id = R.color.app_background),
         bottomBar = {
             BottomNavBar(
                 selectedItem = BottomNavItem.AUCTIONS,
@@ -65,7 +66,7 @@ fun MyAuctionsScreen(navController: NavController) {
                 .background(colorResource(R.color.app_background))
 
         ) {
-            HeaderImage(R.drawable.mis_subastas, "Mis", "Subastas", "")
+            HeaderImage(colorResource(R.color.main_color), R.drawable.mis_subastas, "Mis", "Subastas", "")
 
             Row(
                 modifier = Modifier
@@ -79,7 +80,6 @@ fun MyAuctionsScreen(navController: NavController) {
 
             Column(modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 20.dp)
             ) {
                 subastas.forEachIndexed { index, (title, author) ->
                     SubastaListItem("", title, author, isFinalizada = selectedTab == "finalizadas")

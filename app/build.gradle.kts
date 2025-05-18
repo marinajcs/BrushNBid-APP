@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation ("com.squareup.okhttp3:okhttp:4.11.0")

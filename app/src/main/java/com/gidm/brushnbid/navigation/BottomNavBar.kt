@@ -1,7 +1,10 @@
 package com.gidm.brushnbid.navigation
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -12,9 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gidm.brushnbid.R
@@ -28,55 +32,76 @@ fun BottomNavBar(
     onNotificationsClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    Box {
-        NavigationBar(
-            containerColor = colorResource(id = R.color.app_background),
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-        ) {
-            NavigationBarItem(
-                selected = selectedItem == BottomNavItem.HOME,
-                onClick = onHomeClick,
-                icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") }
-            )
-            NavigationBarItem(
-                selected = selectedItem == BottomNavItem.AUCTIONS,
-                onClick = onAuctionsClick,
-                icon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.gavel),
-                        contentDescription = "Subastas",
-                        modifier = Modifier.size(31.dp)
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.weight(1f)) // espacio para el FAB
+                .shadow(
+                    elevation = 12.dp,
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black,
+                    clip = false
+                )
+                .background(colorResource(id = R.color.app_background))
+                .align(Alignment.BottomCenter)
+        )
 
-            NavigationBarItem(
-                selected = selectedItem == BottomNavItem.NOTIFICATIONS,
-                onClick = onNotificationsClick,
-                icon = { Icon(Icons.Default.Notifications, contentDescription = "Notificaciones") }
-            )
-            NavigationBarItem(
-                selected = selectedItem == BottomNavItem.PROFILE,
-                onClick = onProfileClick,
-                icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") }
-            )
-        }
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .align(Alignment.TopCenter)
+                .offset(y = (-18).dp)
+                .background(
+                    color = colorResource(id = R.color.app_background),
+                    shape = CircleShape
+                )
+
+        )
 
         FloatingActionButton(
             onClick = onCreateClick,
             containerColor = colorResource(id = R.color.main_color),
             contentColor = Color.White,
+            shape = CircleShape,
             modifier = Modifier
+                .size(56.dp)
                 .align(Alignment.TopCenter)
-                .offset(y = -(8.dp))
+                .offset(y = (-2).dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Crear")
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            NavigationItem(icon = Icons.Default.Home, selected = selectedItem == BottomNavItem.HOME, onClick = onHomeClick)
+            NavigationItem(icon = Icons.Outlined.Gavel, selected = selectedItem == BottomNavItem.AUCTIONS, onClick = onAuctionsClick)
+            Spacer(modifier = Modifier.width(56.dp)) // Espacio para FAB
+            NavigationItem(icon = Icons.Default.Notifications, selected = selectedItem == BottomNavItem.NOTIFICATIONS, onClick = onNotificationsClick)
+            NavigationItem(icon = Icons.Default.Person, selected = selectedItem == BottomNavItem.PROFILE, onClick = onProfileClick)
+        }
     }
 }
+
+@Composable
+private fun NavigationItem(icon: ImageVector, selected: Boolean, onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (selected) colorResource(id = R.color.main_color) else Color.DarkGray,
+            modifier = Modifier.size(30.dp)
+        )
+    }
+}
+
 
 enum class BottomNavItem {
     HOME, AUCTIONS, NOTIFICATIONS, PROFILE

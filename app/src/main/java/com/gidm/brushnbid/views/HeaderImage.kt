@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.gidm.brushnbid.R
 
 @Composable
-fun HeaderImage(imgId: Int, txt1: String, txt2: String, subtxt: String) {
+fun HeaderImage(color: Color, imgId: Int, txt1: String, txt2: String, subtxt: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,7 +42,7 @@ fun HeaderImage(imgId: Int, txt1: String, txt2: String, subtxt: String) {
                 .height(170.dp)
                 .fillMaxWidth(0.9f) // hueco a la derecha
                 .background(
-                    color = colorResource(R.color.main_color),
+                    color = color,
                     shape = RoundedCornerShape(topEnd = 100.dp, bottomEnd = 100.dp)
                 )
                 .align(alignment = Alignment.BottomStart)
@@ -93,5 +93,6 @@ fun HeaderImage(imgId: Int, txt1: String, txt2: String, subtxt: String) {
 @Preview(showBackground = true)
 @Composable
 fun HeaderImagePreview() {
-    HeaderImage(R.drawable.mis_subastas, "Mis", "Subastas", "")
+    val color = colorResource(R.color.main_color)
+    HeaderImage(color, R.drawable.mis_subastas, "Mis", "Subastas", "")
 }

@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import com.gidm.brushnbid.views.AddMenuScreen
+import com.gidm.brushnbid.views.AddSubastaScreen
 import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
@@ -18,6 +19,7 @@ import com.gidm.brushnbid.views.LoginScreen
 import com.gidm.brushnbid.views.MyAuctionsScreen
 import com.gidm.brushnbid.views.NotificationScreen
 import com.gidm.brushnbid.views.ProfileScreen
+import com.gidm.brushnbid.views.SelectObraScreen
 import com.gidm.brushnbid.views.SubastasMainScreen
 import kotlinx.coroutines.launch
 
@@ -114,6 +116,30 @@ fun AppNavigation(
 
         composable("addMenu") {
             AddMenuScreen(navController)
+        }
+
+        composable("addSubasta") {
+            AddSubastaScreen (
+                navController = navController,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSubmit = {
+                    navController.navigate("auctions")
+                }
+            )
+        }
+
+        composable("selectObra") {
+            SelectObraScreen(
+                onBack = { navController.popBackStack() },
+                onObraSelected = { obra ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("obraSeleccionada", obra)
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

@@ -97,7 +97,7 @@ fun AddMenuScreen(navController: NavController) {
                     .width(300.dp)
             ) {
                 Button(
-                    onClick = { /* Navegar a añadir obra */ },
+                    onClick = { navController.navigate("addSubasta") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(58.dp),

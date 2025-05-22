@@ -89,7 +89,7 @@ fun AppNavigation(
                 onBack = {
                     navController.popBackStack()
                 },
-                onSubmit = {
+                onSuccessLogin = {
                     navController.navigate("home")
                 },
                 onForgotPassword = {

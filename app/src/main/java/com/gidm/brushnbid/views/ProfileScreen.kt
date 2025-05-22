@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,20 +40,34 @@ import com.gidm.brushnbid.R
 import com.gidm.brushnbid.data.Estado
 import com.gidm.brushnbid.data.Obra
 import com.gidm.brushnbid.data.ObraSummary
+import com.gidm.brushnbid.data.UserPreferences
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    var selectedItem by remember { mutableStateOf(BottomNavItem.NOTIFICATIONS) }
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    var username by remember { mutableStateOf("") }
+    var fullname by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        username = userPrefs.getUsername() ?: "Username"
+        fullname = userPrefs.getFullname() ?: "Nombre completo"
+    }
 
     val imgid = R.drawable.print_art
+
     val misObras = listOf(
         ObraSummary("Ajedrez", Estado.ACTIVA, imgid),
         ObraSummary("Taza de cerámica", Estado.ACTIVA, imgid),
         ObraSummary("Jarrón de cerámica", Estado.ACTIVA, imgid),
         ObraSummary("Platos de cerámica", Estado.VENDIDA, imgid)
     )
+
+    //val misObras = remember { mutableStateListOf<ObraSummary>() }
+
 
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),
@@ -76,8 +92,8 @@ fun ProfileScreen(navController: NavController) {
             HeaderProfile(
                 colorResource(R.color.light_blue),
                 R.drawable.profile_pic,
-                "Marinajcs",
-                "Marina Jun Carranza Sánchez"
+                username,
+                fullname
             )
 
             Spacer(modifier = Modifier.padding(9.dp))

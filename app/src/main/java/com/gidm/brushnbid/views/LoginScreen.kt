@@ -1,5 +1,6 @@
 package com.gidm.brushnbid.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,17 +19,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.gidm.brushnbid.api.ApiClient
+import com.gidm.brushnbid.api.ApiService
+import com.gidm.brushnbid.data.LoginRequest
+import com.gidm.brushnbid.data.LoginResponse
+import com.gidm.brushnbid.data.UserPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @Composable
 fun LoginScreen(
     onBack: () -> Unit,
-    onSubmit: () -> Unit,
+    onSuccessLogin: (String) -> Unit,
     onForgotPassword: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    val apiService = remember { ApiClient.retrofit.create(ApiService::class.java) }
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
 
     Column(
         modifier = Modifier
@@ -56,10 +74,19 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        InputField("Dirección de e-mail", email) { email = it }
+        InputField("Dirección de e-mail o username", email) { email = it }
         InputField("Contraseña", password, isPassword = true) { password = it }
 
         val allFieldsFilled = email.isNotBlank() && password.isNotBlank()
+
+        if (!errorMessage.isNullOrBlank()) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -75,7 +102,32 @@ fun LoginScreen(
         )
 
         Button(
-            onClick = onSubmit,
+            onClick = {
+                val request = LoginRequest(email, password)
+                apiService.login(request).enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        if (response.isSuccessful) {
+                            val body = response.body()
+                            if (body?.token != null) {
+                                // Guardar datos del usuario en DataStore
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    userPrefs.saveUserSession(body.userId, body.token, body.username, body.email, body.fullname)
+                                }
+                                onSuccessLogin(body.token)
+                            } else {
+                                errorMessage = "Token no recibido."
+                            }
+                        } else {
+                            errorMessage = "Credenciales incorrectas."
+                        }
+                    }
+
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        errorMessage = "Error de red: ${t.message}"
+                        Log.e("LoginScreen", "Login failed", t)
+                    }
+                })
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
@@ -103,7 +155,7 @@ fun onForgotPassword() {
 fun LoginScreenPreview() {
     LoginScreen(
         onBack = {},
-        onSubmit = {},
+        onSuccessLogin = {},
         onForgotPassword = {}
     )
 }

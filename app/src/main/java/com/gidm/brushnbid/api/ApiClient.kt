@@ -23,7 +23,7 @@ class SessionCookieJar : CookieJar {
 }
 
 object ApiClient {
-    private const val BASE_URL = "https://10.0.2.2:3000/"
+    private const val BASE_URL = "http://10.0.2.2:3000/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -35,12 +35,12 @@ object ApiClient {
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .cookieJar(SessionCookieJar()) // Añadido manejo de cookies para sesiones
+        .cookieJar(SessionCookieJar())
         .build()
 
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(client) // Usar el cliente configurado con cookies
+        .client(client)
         .build()
 }

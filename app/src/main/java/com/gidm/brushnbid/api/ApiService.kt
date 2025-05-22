@@ -1,6 +1,8 @@
 package com.gidm.brushnbid.api
 
 import com.gidm.brushnbid.data.Adjudicacion
+import com.gidm.brushnbid.data.LoginRequest
+import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
@@ -12,6 +14,9 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
+
+    @POST("login")
+    fun login(@Body request: LoginRequest): Call<LoginResponse>
 
     // Usuarios
     @GET("users")

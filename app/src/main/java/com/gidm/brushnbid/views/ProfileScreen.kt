@@ -3,6 +3,7 @@ package com.gidm.brushnbid.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -13,13 +14,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,12 +39,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.data.Estado
-import com.gidm.brushnbid.data.Obra
 import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.UserPreferences
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -82,43 +85,58 @@ fun ProfileScreen(navController: NavController) {
             )
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .background(colorResource(R.color.app_background))
-
         ) {
-            HeaderProfile(
-                colorResource(R.color.light_blue),
-                R.drawable.profile_pic,
-                username,
-                fullname
-            )
-
-            Spacer(modifier = Modifier.padding(9.dp))
-
-            Text(
-                text = "Mis obras",
-                fontSize = 20.sp,
-                lineHeight = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 25.dp)
-            )
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(bottom = 100.dp)
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(misObras) { obra ->
-                    ObraCard(obra)
+                HeaderProfile(
+                    colorResource(R.color.light_blue),
+                    R.drawable.profile_pic,
+                    username,
+                    fullname
+                )
+
+                Spacer(modifier = Modifier.padding(9.dp))
+
+                Text(
+                    text = "Mis obras",
+                    fontSize = 20.sp,
+                    lineHeight = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 25.dp)
+                )
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    items(misObras) { obra ->
+                        ObraCard(obra)
+                    }
                 }
             }
 
+            IconButton(
+                onClick = { navController.navigate("configProfile") },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Configuración",
+                    tint = colorResource(id = R.color.dark_gray)
+                )
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import com.gidm.brushnbid.views.AddMenuScreen
 import com.gidm.brushnbid.views.AddSubastaScreen
+import com.gidm.brushnbid.views.ConfigPerfilScreen
 import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
@@ -112,6 +113,18 @@ fun AppNavigation(
 
         composable("profile") {
             ProfileScreen(navController)
+        }
+
+        composable("configProfile") {
+            ConfigPerfilScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                navController = navController,
+                onLogout = {
+                    navController.navigate("mainLogin")
+                }
+            )
         }
 
         composable("addMenu") {

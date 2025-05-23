@@ -29,6 +29,7 @@ import com.gidm.brushnbid.data.UserPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -109,16 +110,26 @@ fun LoginScreen(
                         if (response.isSuccessful) {
                             val body = response.body()
                             if (body?.token != null) {
-                                // Guardar datos del usuario en DataStore
                                 CoroutineScope(Dispatchers.IO).launch {
                                     userPrefs.saveUserSession(body.userId, body.token, body.username, body.email, body.fullname)
                                 }
                                 onSuccessLogin(body.token)
-                            } else {
-                                errorMessage = "Token no recibido."
                             }
                         } else {
-                            errorMessage = "Credenciales incorrectas."
+                            val errorBody = response.errorBody()?.string()
+                            errorMessage = parseErrorMessage(errorBody)
+                        }
+                    }
+
+                    fun parseErrorMessage(errorBody: String?): String {
+                        return try {
+                            if (errorBody == null) "Error desconocido"
+                            else {
+                                val json = JSONObject(errorBody)
+                                json.optString("message", "Error desconocido")
+                            }
+                        } catch (e: Exception) {
+                            "Error desconocido"
                         }
                     }
 

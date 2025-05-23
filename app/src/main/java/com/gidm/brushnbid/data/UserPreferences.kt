@@ -42,6 +42,15 @@ class UserPreferences(private val context: Context) {
         context.dataStore.edit { it.clear() }
     }
 
+    suspend fun clearUserSession() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(USER_ID)
+            prefs.remove(USERNAME)
+            prefs.remove(TOKEN)
+            prefs.remove(EMAIL)
+        }
+    }
+
     suspend fun getUserId(): Int? {
         val prefs = context.dataStore.data.first()
         return prefs[USER_ID]

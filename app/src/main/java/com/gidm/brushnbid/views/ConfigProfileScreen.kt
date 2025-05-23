@@ -37,50 +37,46 @@ fun ConfigProfileScreen(
     val userPrefs = remember { UserPreferences(context) }
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.app_background))
             .padding(24.dp)
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Volver",
+        Column(
             modifier = Modifier
-                .size(28.dp)
-                .clickable { onBack() }
-        )
+                .fillMaxWidth()
+                .align(Alignment.TopStart) // contenido arriba
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Volver",
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable { onBack() }
+            )
 
-        Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-        Text(
-            text = "Configuración del perfil",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            lineHeight = 27.sp
-        )
+            Text(
+                text = "Configuración del perfil",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                lineHeight = 27.sp
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        // Opciones de configuración
-        ConfigOption(text = "Editar perfil") {
-            //navController.navigate("")
+            ConfigOption(text = "Editar perfil") { /* Navegar a editar perfil */ }
+            HorizontalDivider(color = colorResource(id = R.color.main_color), thickness = 1.4.dp)
+
+            ConfigOption(text = "Notificaciones") { /* Navegar a notificaciones */ }
+            HorizontalDivider(color = colorResource(id = R.color.main_color), thickness = 1.dp)
+
+            ConfigOption(text = "Historial de subastas") { /* Navegar a historial subastas */ }
         }
-        HorizontalDivider(color = colorResource(id = R.color.main_color), thickness = 1.4.dp)
 
-        ConfigOption(text = "Notificaciones") {
-            // Navegar a notificaciones
-        }
-        HorizontalDivider(color = colorResource(id = R.color.main_color), thickness = 1.dp)
-
-        ConfigOption(text = "Historial de subastas") {
-            // Navegar a historial subastas
-        }
-
-        Spacer(modifier = Modifier.weight(0.95f))
-
-        // Botón cerrar sesión
         OutlinedButton(
             onClick = {
                 coroutineScope.launch {
@@ -90,7 +86,8 @@ fun ConfigProfileScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .align(Alignment.BottomCenter),  // Botón pegado abajo
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.main_color)),
             border = BorderStroke(1.dp, colorResource(id = R.color.main_color))

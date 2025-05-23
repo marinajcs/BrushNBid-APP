@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -26,7 +25,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
-import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaSummary
 
 @Composable

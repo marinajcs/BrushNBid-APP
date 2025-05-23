@@ -10,10 +10,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +29,6 @@ import com.gidm.brushnbid.navigation.BottomNavItem
 
 @Composable
 fun AddMenuScreen(navController: NavController) {
-    var selectedItem by remember { mutableStateOf(BottomNavItem.CREATE) }
 
     Scaffold(
         containerColor = colorResource(id = R.color.main_color),

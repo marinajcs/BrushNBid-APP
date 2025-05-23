@@ -28,7 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun ConfigPerfilScreen(
+fun ConfigProfileScreen(
     onBack: () -> Unit,
     navController: NavController,
     onLogout: () -> Unit
@@ -128,7 +128,6 @@ fun ConfigOption(text: String, onClick: () -> Unit) {
                 tint = colorResource(id = R.color.main_color)
             )
         }
-        // Aquí puedes añadir un espacio extra si quieres separar más entre opciones, o controlar en el lugar donde uses ConfigOption
     }
 }
 
@@ -136,7 +135,7 @@ fun ConfigOption(text: String, onClick: () -> Unit) {
 @Composable
 fun ConfigPerfilScreenPreview() {
     val navController = rememberNavController()
-    ConfigPerfilScreen(
+    ConfigProfileScreen(
         onBack = {},
         navController,
         onLogout = {}

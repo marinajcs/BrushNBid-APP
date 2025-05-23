@@ -12,7 +12,7 @@ import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import com.gidm.brushnbid.views.AddMenuScreen
 import com.gidm.brushnbid.views.AddSubastaScreen
-import com.gidm.brushnbid.views.ConfigPerfilScreen
+import com.gidm.brushnbid.views.ConfigProfileScreen
 import com.gidm.brushnbid.views.FirstStartScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
@@ -30,21 +30,32 @@ fun AppNavigation(
     startDestination: String
 ) {
     val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
 
     // Estado para controlar si es la primera vez que se abre la app
     val isFirstTime = remember { mutableStateOf<Boolean?>(null) }
+    val hasToken = remember { mutableStateOf<String?>(null) }
 
     // Cargar el estado de "es la primera vez" al iniciar
     LaunchedEffect(Unit) {
         isFirstTime.value = UserPreferences(context).isFirstLaunch()
+        hasToken.value = userPrefs.getToken()
     }
 
     if (isFirstTime.value == null) {
         return
     }
 
-    NavHost(navController = navController, startDestination = if (isFirstTime.value == true) "firstStart" else "mainLogin") {
+    val start = if (isFirstTime.value == true) {
+        "firstStart"
+    } else if (hasToken.value == null) {
+        "mainLogin"
+    } else {
+        "home"
+    }
+
+    NavHost(navController = navController, startDestination = start) {
 
         // Pantalla de primer inicio
         composable("firstStart") {
@@ -116,7 +127,7 @@ fun AppNavigation(
         }
 
         composable("configProfile") {
-            ConfigPerfilScreen(
+            ConfigProfileScreen(
                 onBack = {
                     navController.popBackStack()
                 },

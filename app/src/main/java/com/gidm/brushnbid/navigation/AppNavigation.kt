@@ -14,6 +14,8 @@ import com.gidm.brushnbid.views.AddMenuScreen
 import com.gidm.brushnbid.views.AddSubastaScreen
 import com.gidm.brushnbid.views.ConfigProfileScreen
 import com.gidm.brushnbid.views.FirstStartScreen
+import com.gidm.brushnbid.views.InfoObraScreen
+import com.gidm.brushnbid.views.InfoSubastaScreen
 import com.gidm.brushnbid.views.MainLoginScreen
 import com.gidm.brushnbid.views.RegisterScreen
 import com.gidm.brushnbid.views.LoginScreen
@@ -136,6 +138,30 @@ fun AppNavigation(
                     navController.navigate("mainLogin")
                 }
             )
+        }
+
+        composable("infoObra/{obraId}") { backStackEntry ->
+            val obraId = backStackEntry.arguments?.getString("obraId")?.toIntOrNull()
+
+            if (obraId != null) {
+                InfoObraScreen(
+                    obraId = obraId,
+                    onBack = { navController.popBackStack() },
+                    navController = navController
+                )
+            }
+        }
+
+        composable("infoSubasta/{subastaId}") { backStackEntry ->
+            val subastaId = backStackEntry.arguments?.getString("subastaId")?.toIntOrNull()
+
+            if (subastaId != null) {
+                InfoSubastaScreen(
+                    subastaId = subastaId,
+                    onBack = { navController.popBackStack() },
+                    navController = navController
+                )
+            }
         }
 
         composable("addMenu") {

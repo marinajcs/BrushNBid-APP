@@ -2,6 +2,7 @@ package com.gidm.brushnbid.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +76,7 @@ fun ProfileScreen(navController: NavController) {
                             else
                                 Estado.ACTIVA
                         ObraSummary(
+                            id = obra.id,
                             titulo = obra.titulo,
                             estado = estado,
                             imagen = imgid
@@ -136,7 +138,7 @@ fun ProfileScreen(navController: NavController) {
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
                     items(obras) { obra ->
-                        ObraCard(obra)
+                        ObraCard(obra, navController)
                     }
                 }
             }
@@ -158,7 +160,7 @@ fun ProfileScreen(navController: NavController) {
 }
 
 @Composable
-fun ObraCard(obra: ObraSummary) {
+fun ObraCard(obra: ObraSummary, navController: NavController) {
     val grayScaleFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
 
     Column(
@@ -167,12 +169,15 @@ fun ObraCard(obra: ObraSummary) {
     ) {
         Image(
             painter = painterResource(id = obra.imagen),
-            contentDescription = null,
+            contentDescription = "Obra",
             colorFilter = if (obra.estado == Estado.VENDIDA) grayScaleFilter else null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .height(190.dp)
                 .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    navController.navigate("infoObra/${obra.id}")
+                }
         )
         Text(
             text = obra.titulo,

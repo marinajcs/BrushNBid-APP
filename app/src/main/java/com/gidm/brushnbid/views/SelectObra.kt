@@ -34,9 +34,9 @@ fun SelectObraScreen(
 
     val imgid = R.drawable.print_art
     val misObras = listOf(
-        ObraSummary("Ajedrez", Estado.ACTIVA, imgid),
-        ObraSummary("Taza de cerámica", Estado.ACTIVA, imgid),
-        ObraSummary("Jarrón de cerámica", Estado.ACTIVA, imgid)
+        ObraSummary(1, "Ajedrez", Estado.ACTIVA, imgid),
+        ObraSummary(2, "Taza de cerámica", Estado.ACTIVA, imgid),
+        ObraSummary(3, "Jarrón de cerámica", Estado.ACTIVA, imgid)
     )
 
     Column(

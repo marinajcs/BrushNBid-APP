@@ -106,7 +106,7 @@ fun AddMenuScreen(navController: NavController) {
                 }
 
                 Button(
-                    onClick = { /* Navegar a añadir subasta */ },
+                    onClick = { navController.navigate("addSubasta") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(58.dp),

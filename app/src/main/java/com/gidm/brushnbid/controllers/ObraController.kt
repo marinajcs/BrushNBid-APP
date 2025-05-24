@@ -3,6 +3,7 @@ package com.gidm.brushnbid.controllers
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraSummary
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +44,7 @@ class ObraController {
         })
     }
 
-    // Obtener obras de un usuario por su ID
+
     fun getObrasByUser(userId: Int, onSuccess: (List<Obra>) -> Unit, onError: (String) -> Unit) {
         apiService.getObrasByUser(userId).enqueue(object : Callback<List<Obra>> {
             override fun onResponse(call: Call<List<Obra>>, response: Response<List<Obra>>) {

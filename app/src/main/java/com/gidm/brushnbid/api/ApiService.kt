@@ -4,6 +4,7 @@ import com.gidm.brushnbid.data.Adjudicacion
 import com.gidm.brushnbid.data.LoginRequest
 import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta

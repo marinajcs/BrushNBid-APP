@@ -1,12 +1,14 @@
 package com.gidm.brushnbid.data
 
+import com.google.gson.annotations.SerializedName
+
 data class User(
-    val nombreCompleto: String,
+    @SerializedName("full_name") val fullname: String,
     val username: String,
     val email: String,
     val password: String,
     val pais: String,
     val direccion: String,
-    val rol: Rol,
-    val subastasSeguidas: List<Subasta> = listOf()
+    val rol: String,
+    val wallet: Double,
 )

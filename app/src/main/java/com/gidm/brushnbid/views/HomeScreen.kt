@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.gidm.brushnbid.R
+import com.gidm.brushnbid.controllers.SubastaController
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 import com.gidm.brushnbid.data.SubastaSummary
@@ -30,31 +31,36 @@ import com.gidm.brushnbid.data.SubastaSummary
 @Composable
 fun SubastasMainScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf("activas") }
-    var subastas: List<SubastaSummary> by remember { mutableStateOf(listOf<SubastaSummary>()) } // Lista de subastas
+    var subastas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
+    var subastasActivas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
+    val subastaController = remember { SubastaController() }
 
-    // Simulación de subastas activas y seguidas
-    val subastasActivas = listOf(
-        SubastaSummary("Serigrafía orca", "Paula Butrón", "https://storage.googleapis.com/pod_public/1300/234443.jpg"),
-        SubastaSummary("Pintura abstracta", "Juan Pérez", "https://storage.googleapis.com/pod_public/1300/234444.jpg")
-    )
+    LaunchedEffect(Unit) {
+        subastaController.getActiveSubastas(
+            onSuccess = { listaSubastas ->
+                val summaries = listaSubastas.map { subasta ->
+                    SubastaSummary(
+                        subastaId = subasta.subastaId,
+                        obra = subasta.obra,
+                        vendedor = subasta.vendedor,
+                        image = "https://storage.googleapis.com/pod_public/1300/234444.jpg"
+                    )
+                }
+                subastasActivas = summaries
+                subastas = summaries
+            },
+            onError = {
+                subastasActivas = emptyList()
+                subastas = emptyList()
+            }
+        )
+    }
 
     val subastasSeguidas = listOf(
-        SubastaSummary("Escultura moderna", "Carlos Ruiz", "https://storage.googleapis.com/pod_public/1300/234445.jpg"),
-        SubastaSummary("Retrato clásico", "Ana Martínez", "https://storage.googleapis.com/pod_public/1300/234446.jpg")
+        // https://storage.googleapis.com/pod_public/1300/234444.jpg
+        SubastaSummary(10, "Escultura moderna", "Carlos Ruiz", "https://storage.googleapis.com/pod_public/1300/234445.jpg"),
+        SubastaSummary(11, "Retrato clásico", "Ana Martínez", "https://storage.googleapis.com/pod_public/1300/234446.jpg")
     )
-
-    val changeSubastas = { type: String ->
-        subastas = when (type) {
-            "activas" -> subastasActivas
-            "seguidas" -> subastasSeguidas
-            else -> listOf()
-        }
-    }
-
-    // Establecer las subastas iniciales
-    LaunchedEffect(Unit) {
-        changeSubastas("activas")
-    }
 
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),

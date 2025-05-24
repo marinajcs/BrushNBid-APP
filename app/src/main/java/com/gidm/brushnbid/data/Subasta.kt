@@ -17,9 +17,10 @@ data class Subasta(
 */
 
 data class SubastaSummary(
-    val obra: String,
-    val vendedor: String,
-    val image: String,
+    @SerializedName("subasta_id") val subastaId: Int,
+    @SerializedName("obra_titulo") val obra: String,
+    @SerializedName("vendedor_fullname") val vendedor: String,
+    @SerializedName("obra_imagen") val image: String,
 )
 
 data class Subasta(

@@ -9,6 +9,7 @@ import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInput
+import com.gidm.brushnbid.data.SubastaSummary
 import com.gidm.brushnbid.data.User
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -75,7 +76,7 @@ interface ApiService {
 
     // Obtener subastas activas
     @GET("/subastas/activas")
-    fun getActiveSubastas(): Call<List<Subasta>>
+    fun getActiveSubastas(): Call<List<SubastaSummary>>
 
     // Obtener una subasta por ID
     @GET("/subastas/{id}")

@@ -69,7 +69,11 @@ fun ProfileScreen(navController: NavController) {
             obraController.getObrasByUser(userId,
                 onSuccess = { listaObras ->
                     obras = listaObras.map { obra ->
-                        val estado = if (obra.autoriaId != obra.propiedadId) Estado.VENDIDA else Estado.ACTIVA
+                        val estado =
+                            if (obra.autoriaId == userId && obra.propiedadId != userId)
+                                Estado.VENDIDA
+                            else
+                                Estado.ACTIVA
                         ObraSummary(
                             titulo = obra.titulo,
                             estado = estado,

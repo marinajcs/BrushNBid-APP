@@ -1,54 +1,15 @@
 package com.gidm.brushnbid.controllers
 
+import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.data.User
 import com.gidm.brushnbid.api.ApiService
-import com.gidm.brushnbid.data.LoginRequest
-import com.gidm.brushnbid.data.LoginResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserController(private val apiService: ApiService) {
+class UserController() {
 
-    fun login(username: String, password: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
-        val loginRequest = LoginRequest(username, password)
-
-        apiService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                if (response.isSuccessful) {
-                    val token = response.body()?.token
-                    if (token != null) {
-                        onSuccess(token)  // Puedes guardar el token con DataStore o SharedPreferences
-                    } else {
-                        onError("Token no recibido")
-                    }
-                } else {
-                    onError("Credenciales incorrectas")
-                }
-            }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                onError("Error de red: ${t.message}")
-            }
-        })
-    }
-
-    // Cerrar sesión (Logout)
-    fun logout(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        apiService.logout().enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure("Error al cerrar sesión: ${response.code()}")
-                }
-            }
-
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                onFailure("Error al hacer la solicitud: ${t.message}")
-            }
-        })
-    }
+    private val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
     // Obtener todos los usuarios
     fun getUsers(onSuccess: (List<User>) -> Unit, onFailure: (String) -> Unit) {

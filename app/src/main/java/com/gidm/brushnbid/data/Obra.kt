@@ -4,9 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Obra(
+    val id: Int,
     val titulo: String,
-    @SerializedName("autoria_id") val autoriaId: Int,          // Relación con Usuario en lugar de String
-    @SerializedName("propiedad_id") val propiedadId: Int,         // Quien la tiene actualmente
+    @SerializedName("autoria_id") val autoriaId: Int,
+    @SerializedName("propiedad_id") val propiedadId: Int,
     val tipo: String,
     val descripcion: String,
     val imagen: String
@@ -14,6 +15,7 @@ data class Obra(
 
 
 data class ObraSummary(
+    val id: Int,
     val titulo: String,
     val estado: Estado,
     val imagen: Int
@@ -22,3 +24,12 @@ data class ObraSummary(
 enum class Estado{
     ACTIVA, VENDIDA
 }
+
+data class ObraInfo(
+    val titulo: String,
+    @SerializedName("autoria_nombre") val autoria: String,
+    @SerializedName("propiedad_nombre") val propiedad: String,
+    val tipo: String,
+    val descripcion: String,
+    val imagen: Int
+)

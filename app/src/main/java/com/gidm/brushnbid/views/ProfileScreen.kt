@@ -2,6 +2,7 @@ package com.gidm.brushnbid.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import com.gidm.brushnbid.controllers.ObraController
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -54,23 +58,37 @@ fun ProfileScreen(navController: NavController) {
     val userPrefs = remember { UserPreferences(context) }
     var username by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
+    var obras by remember { mutableStateOf(listOf<ObraSummary>()) }
+    val obraController = remember { ObraController() }
+    val imgid = R.drawable.print_art
 
     LaunchedEffect(Unit) {
         username = userPrefs.getUsername() ?: "Username"
         fullname = userPrefs.getFullname() ?: "Nombre completo"
+        val userId = userPrefs.getUserId()
+        if (userId != null) {
+            obraController.getObrasByUser(userId,
+                onSuccess = { listaObras ->
+                    obras = listaObras.map { obra ->
+                        val estado =
+                            if (obra.autoriaId == userId && obra.propiedadId != userId)
+                                Estado.VENDIDA
+                            else
+                                Estado.ACTIVA
+                        ObraSummary(
+                            id = obra.id,
+                            titulo = obra.titulo,
+                            estado = estado,
+                            imagen = imgid
+                        )
+                    }
+                },
+                onError = {
+                    obras = emptyList()
+                }
+            )
+        }
     }
-
-    val imgid = R.drawable.print_art
-
-    val misObras = listOf(
-        ObraSummary("Ajedrez", Estado.ACTIVA, imgid),
-        ObraSummary("Taza de cerámica", Estado.ACTIVA, imgid),
-        ObraSummary("Jarrón de cerámica", Estado.ACTIVA, imgid),
-        ObraSummary("Platos de cerámica", Estado.VENDIDA, imgid)
-    )
-
-    //val misObras = remember { mutableStateListOf<ObraSummary>() }
-
 
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),
@@ -119,8 +137,8 @@ fun ProfileScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
-                    items(misObras) { obra ->
-                        ObraCard(obra)
+                    items(obras) { obra ->
+                        ObraCard(obra, navController)
                     }
                 }
             }
@@ -142,18 +160,24 @@ fun ProfileScreen(navController: NavController) {
 }
 
 @Composable
-fun ObraCard(obra: ObraSummary) {
+fun ObraCard(obra: ObraSummary, navController: NavController) {
+    val grayScaleFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
+
     Column(
         modifier = Modifier
             .width(160.dp)
     ) {
         Image(
             painter = painterResource(id = obra.imagen),
-            contentDescription = null,
+            contentDescription = "Obra",
+            colorFilter = if (obra.estado == Estado.VENDIDA) grayScaleFilter else null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .height(190.dp)
                 .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    navController.navigate("infoObra/${obra.id}")
+                }
         )
         Text(
             text = obra.titulo,

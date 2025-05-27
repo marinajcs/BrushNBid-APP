@@ -4,10 +4,13 @@ import com.gidm.brushnbid.data.Adjudicacion
 import com.gidm.brushnbid.data.LoginRequest
 import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraInfo
+import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInput
+import com.gidm.brushnbid.data.SubastaSummary
 import com.gidm.brushnbid.data.User
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -50,6 +53,9 @@ interface ApiService {
     @GET("/obras/{id}")
     fun getObraById(@Path("id") id: Int): Call<Obra>
 
+    @GET("/obras/info/{id}")
+    fun getObraInfoById(@Path("id") id: Int): Call<ObraInfo>
+
     // Obtener las obras de un usuario específico
     @GET("/obras/user/{id}")
     fun getObrasByUser(@Path("id") userId: Int): Call<List<Obra>>
@@ -74,7 +80,7 @@ interface ApiService {
 
     // Obtener subastas activas
     @GET("/subastas/activas")
-    fun getActiveSubastas(): Call<List<Subasta>>
+    fun getActiveSubastas(): Call<List<SubastaSummary>>
 
     // Obtener una subasta por ID
     @GET("/subastas/{id}")

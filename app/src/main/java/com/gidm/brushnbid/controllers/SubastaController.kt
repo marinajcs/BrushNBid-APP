@@ -4,6 +4,7 @@ import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.Subasta
+import com.gidm.brushnbid.data.SubastaSummary
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,9 +30,9 @@ class SubastaController {
     }
 
     // Obtener subastas activas
-    fun getActiveSubastas(onSuccess: (List<Subasta>) -> Unit, onError: (String) -> Unit) {
-        apiService.getActiveSubastas().enqueue(object : Callback<List<Subasta>> {
-            override fun onResponse(call: Call<List<Subasta>>, response: Response<List<Subasta>>) {
+    fun getActiveSubastas(onSuccess: (List<SubastaSummary>) -> Unit, onError: (String) -> Unit) {
+        apiService.getActiveSubastas().enqueue(object : Callback<List<SubastaSummary>> {
+            override fun onResponse(call: Call<List<SubastaSummary>>, response: Response<List<SubastaSummary>>) {
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) } ?: onError("Lista vacía")
                 } else {
@@ -39,7 +40,7 @@ class SubastaController {
                 }
             }
 
-            override fun onFailure(call: Call<List<Subasta>>, t: Throwable) {
+            override fun onFailure(call: Call<List<SubastaSummary>>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

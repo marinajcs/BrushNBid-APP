@@ -3,6 +3,8 @@ package com.gidm.brushnbid.controllers
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraInfo
+import com.gidm.brushnbid.data.ObraSummary
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +45,23 @@ class ObraController {
         })
     }
 
-    // Obtener obras de un usuario por su ID
+    fun getObraInfoById(id: Int, onSuccess: (ObraInfo) -> Unit, onError: (String) -> Unit) {
+        apiService.getObraInfoById(id).enqueue(object : Callback<ObraInfo> {
+            override fun onResponse(call: Call<ObraInfo>, response: Response<ObraInfo>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Obra no encontrada")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ObraInfo>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+
     fun getObrasByUser(userId: Int, onSuccess: (List<Obra>) -> Unit, onError: (String) -> Unit) {
         apiService.getObrasByUser(userId).enqueue(object : Callback<List<Obra>> {
             override fun onResponse(call: Call<List<Obra>>, response: Response<List<Obra>>) {

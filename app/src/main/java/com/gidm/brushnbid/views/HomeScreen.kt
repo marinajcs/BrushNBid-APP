@@ -34,6 +34,12 @@ fun SubastasMainScreen(navController: NavController) {
     var subastas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
     var subastasActivas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
     val subastaController = remember { SubastaController() }
+    var searchText by remember { mutableStateOf("") }
+
+    val subastasFiltradas = subastas.filter {
+        it.obra.contains(searchText, ignoreCase = true) ||
+                it.vendedor.contains(searchText, ignoreCase = true)
+    }
 
     LaunchedEffect(Unit) {
         subastaController.getActiveSubastas(
@@ -87,8 +93,8 @@ fun SubastasMainScreen(navController: NavController) {
             item {
                 // Buscador
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = searchText,
+                    onValueChange = { searchText = it },
                     placeholder = { Text("Buscar en BrushNbid") },
                     leadingIcon = {
                         Icon(Icons.Default.Search, contentDescription = "Buscar")
@@ -129,7 +135,7 @@ fun SubastasMainScreen(navController: NavController) {
             }
 
             // Lista de subastas (simulada)
-            items(subastas) { subasta ->
+            items(subastasFiltradas) { subasta ->
                 SubastaCard(
                     title = subasta.obra,
                     author = subasta.vendedor,

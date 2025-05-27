@@ -11,23 +11,7 @@ class UserController() {
 
     private val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
-    // Obtener todos los usuarios
-    fun getUsers(onSuccess: (List<User>) -> Unit, onFailure: (String) -> Unit) {
-        apiService.getUsers().enqueue(object : Callback<List<User>> {
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                if (response.isSuccessful) {
-                    val users = response.body() ?: emptyList()
-                    onSuccess(users)
-                } else {
-                    onFailure("Error al obtener usuarios: ${response.code()}")
-                }
-            }
 
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                onFailure("Error al hacer la solicitud: ${t.message}")
-            }
-        })
-    }
 
     // Obtener un usuario por ID
     fun getUserById(id: Int, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {

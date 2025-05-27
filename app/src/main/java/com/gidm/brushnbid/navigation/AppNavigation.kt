@@ -92,7 +92,7 @@ fun AppNavigation(
                     navController.popBackStack()
                 },
                 onSubmit = {
-                    navController.navigate("login")
+                    navController.navigate("mainLogin")
                 }
             )
         }

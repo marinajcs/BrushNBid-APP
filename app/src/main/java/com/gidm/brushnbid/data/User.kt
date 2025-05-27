@@ -7,8 +7,5 @@ data class User(
     val username: String,
     val email: String,
     val password: String,
-    val pais: String,
-    val direccion: String,
-    val rol: String,
-    val wallet: Double,
+    val direccion: String
 )

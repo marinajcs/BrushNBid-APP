@@ -24,3 +24,12 @@ data class ObraSummary(
 enum class Estado{
     ACTIVA, VENDIDA
 }
+
+data class ObraInfo(
+    val titulo: String,
+    @SerializedName("autoria_nombre") val autoria: String,
+    @SerializedName("propiedad_nombre") val propiedad: String,
+    val tipo: String,
+    val descripcion: String,
+    val imagen: Int
+)

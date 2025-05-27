@@ -3,6 +3,7 @@ package com.gidm.brushnbid.controllers
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraInfo
 import com.gidm.brushnbid.data.ObraSummary
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,6 +40,22 @@ class ObraController {
             }
 
             override fun onFailure(call: Call<Obra>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    fun getObraInfoById(id: Int, onSuccess: (ObraInfo) -> Unit, onError: (String) -> Unit) {
+        apiService.getObraInfoById(id).enqueue(object : Callback<ObraInfo> {
+            override fun onResponse(call: Call<ObraInfo>, response: Response<ObraInfo>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Obra no encontrada")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ObraInfo>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

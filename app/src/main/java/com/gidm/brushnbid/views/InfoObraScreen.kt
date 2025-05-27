@@ -32,9 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.controllers.ObraController
-import com.gidm.brushnbid.data.Obra
-import com.gidm.brushnbid.data.ObraSummary
-import com.gidm.brushnbid.data.UserPreferences
+import com.gidm.brushnbid.data.ObraInfo
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 
@@ -46,21 +44,16 @@ fun InfoObraScreen(
 ) {
     val context = LocalContext.current
     val obraController = remember { ObraController() }
-    /*
-    var obra by remember { mutableStateOf<Obra>(
-
-        value = TODO(),
-        policy = TODO()
-    ) }
+    var obra by remember { mutableStateOf<ObraInfo?>(null) }
 
     LaunchedEffect(obraId) {
-        obraController.getObraById(
+        obraController.getObraInfoById(
             obraId,
             onSuccess = { obra = it },
-            onError = { }
+            onError = { /* Manejo de error */ }
         )
     }
-    */
+
 
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),
@@ -105,7 +98,7 @@ fun InfoObraScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Título de la obra",
+                text = obra?.titulo ?: "Título de la obra",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 24.sp,
@@ -113,7 +106,7 @@ fun InfoObraScreen(
             )
 
             Text(
-                text = "Autoría",
+                text = obra?.autoria ?: "Autoría",
                 fontSize = 15.sp,
                 lineHeight = 17.sp,
                 color = colorResource(id = R.color.main_color)
@@ -121,18 +114,18 @@ fun InfoObraScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            InfoBox("Propiedad")
+            InfoBox("Propiedad", obra?.propiedad ?: "Propiedad")
             Spacer(modifier = Modifier.height(12.dp))
-            InfoBox("Tipo")
+            InfoBox("Tipo", obra?.tipo ?: "Tipo")
             Spacer(modifier = Modifier.height(12.dp))
-            InfoBox("Descripción", height = 100.dp)
+            InfoBox("Descripción", obra?.descripcion ?: "Descripción", height = 100.dp)
         }
     }
 }
 
 @Composable
-fun InfoBox(label: String, height: Dp = 50.dp) {
-    Box(
+fun InfoBox(label: String, value: String, height: Dp = 55.dp) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
@@ -145,8 +138,16 @@ fun InfoBox(label: String, height: Dp = 50.dp) {
     ) {
         Text(
             text = label,
-            color = Color.Black,
-            fontSize = 14.sp
+            fontSize = 11.sp,
+            lineHeight = 13.sp,
+            color = colorResource(id = R.color.main_color)
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            text = value,
+            fontSize = 14.sp,
+            lineHeight = 16.sp,
+            color = Color.Black
         )
     }
 }

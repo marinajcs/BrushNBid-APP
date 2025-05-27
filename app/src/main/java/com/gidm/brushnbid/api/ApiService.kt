@@ -4,6 +4,7 @@ import com.gidm.brushnbid.data.Adjudicacion
 import com.gidm.brushnbid.data.LoginRequest
 import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra
+import com.gidm.brushnbid.data.ObraInfo
 import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
@@ -51,6 +52,9 @@ interface ApiService {
     // Obtener una obra por ID
     @GET("/obras/{id}")
     fun getObraById(@Path("id") id: Int): Call<Obra>
+
+    @GET("/obras/info/{id}")
+    fun getObraInfoById(@Path("id") id: Int): Call<ObraInfo>
 
     // Obtener las obras de un usuario específico
     @GET("/obras/user/{id}")

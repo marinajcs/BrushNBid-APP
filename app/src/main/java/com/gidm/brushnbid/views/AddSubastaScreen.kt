@@ -40,6 +40,7 @@ fun AddSubastaScreen(
     var incremento by remember { mutableStateOf("") }
     var precioReserva by remember { mutableStateOf("") }
     var compraInmediata by remember { mutableStateOf("") }
+    var duracion by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -164,15 +165,28 @@ fun AddSubastaScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
+        val allFieldsFilled = precioInicial.isNotBlank()
+                // && obra.isNotBlank()
+                // && incremento.isNotBlank()
+                //&& precioReserva.isNotBlank()
+                //&& compraInmediata.isNotBlank()
+                //&& duracion.isNotBlank()
+
         Button(
             onClick = onSubmit,
+            enabled = allFieldsFilled,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
+            ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text(text = "Añadir", color = Color.White)
+            Text(
+                text = "Añadir",
+                color = if (allFieldsFilled) Color.White else Color.Black
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import com.gidm.brushnbid.data.LoginRequest
 import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra
 import com.gidm.brushnbid.data.ObraInfo
+import com.gidm.brushnbid.data.ObraInput
 import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
@@ -62,7 +63,7 @@ interface ApiService {
 
     // Crear una nueva obra
     @POST("/obras")
-    fun createObra(@Body obra: Obra): Call<Obra>
+    fun createObra(@Body obra: ObraInput): Call<ObraInput>
 
     // Actualizar una obra
     @PUT("/obras/{id}")

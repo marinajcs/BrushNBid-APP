@@ -1,5 +1,6 @@
 package com.gidm.brushnbid.views
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +24,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
+import com.gidm.brushnbid.controllers.ObraController
+import com.gidm.brushnbid.data.ObraInput
+import com.gidm.brushnbid.data.User
+import com.gidm.brushnbid.data.UserPreferences
 
 @Composable
 fun AddObraScreen(
@@ -29,11 +35,19 @@ fun AddObraScreen(
     onBack: () -> Unit,
     onSubmit: () -> Unit
 ) {
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    val obraController = remember { ObraController() }
+
+    val tipoOptions = listOf("escultura", "pintura", "fotografía", "otras")
     var titulo by remember { mutableStateOf("") }
-    var autoria by remember { mutableStateOf("") }
-    var propiedad by remember { mutableStateOf("") }
     var tipo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
+    var userId = 0
+
+    LaunchedEffect(Unit) {
+        userId = userPrefs.getUserId()!!
+    }
 
     Box(
         modifier = Modifier
@@ -83,22 +97,48 @@ fun AddObraScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             AddObraInputField(value = titulo, onValueChange = { titulo = it }, label = "Título")
-            AddObraInputField(value = autoria, onValueChange = { autoria = it }, label = "Autoría")
-            AddObraInputField(value = propiedad, onValueChange = { propiedad = it }, label = "Propiedad")
-            AddObraInputField(value = tipo, onValueChange = { tipo = it }, label = "Tipo")
-            AddObraInputField(value = descripcion, onValueChange = { descripcion = it }, label = "Descripción", height = 100.dp)
+            SelectTipoField(selected = tipo, onSelectedChange = { tipo = it })
+            AddObraInputField(value = descripcion, onValueChange = { descripcion = it }, label = "Descripción", height = 120.dp)
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val allFieldsFilled = titulo.isNotBlank()
+                    && tipo.isNotBlank()
+
             Button(
-                onClick = onSubmit,
+                onClick = {
+                    val newObra = ObraInput(
+                        titulo = titulo,
+                        autoriaId = userId,
+                        propiedadId = userId,
+                        tipo = tipo,
+                        descripcion = descripcion,
+                        imagen = ""
+                    )
+                    obraController.createObra(
+                        obra = newObra,
+                        onSuccess = {
+                            Toast.makeText(context, "Obra creada con éxito", Toast.LENGTH_SHORT).show()
+                            onSubmit()
+                        },
+                        onError = { errorMsg ->
+                            Toast.makeText(context, "Error: $errorMsg", Toast.LENGTH_LONG).show()
+                        }
+                    )
+                },
+                enabled = allFieldsFilled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
+                ),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Añadir", color = Color.White)
+                Text(
+                    text = "Añadir",
+                    color = if (allFieldsFilled) Color.White else Color.Black
+                )
             }
         }
     }
@@ -128,6 +168,60 @@ fun AddObraInputField(value: String, onValueChange: (String) -> Unit, label: Str
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectTipoField(
+    selected: String,
+    onSelectedChange: (String) -> Unit,
+    label: String = "Tipo"
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val options = listOf("Escultura", "Pintura", "Fotografía", "Otras")
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.padding(vertical = 8.dp)
+    ) {
+        OutlinedTextField(
+            value = selected,
+            onValueChange = { onSelectedChange(it) },
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .height(55.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = colorResource(id = R.color.main_color),
+                focusedBorderColor = colorResource(id = R.color.main_color),
+                unfocusedTextColor = Color.Black,
+                focusedTextColor = Color.Black,
+                unfocusedLabelColor = Color.Gray,
+                focusedLabelColor = Color.Gray
+            )
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onSelectedChange(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 
 @Preview(showBackground = true)

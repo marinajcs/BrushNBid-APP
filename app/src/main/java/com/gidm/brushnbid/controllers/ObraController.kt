@@ -4,7 +4,9 @@ import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Obra
 import com.gidm.brushnbid.data.ObraInfo
+import com.gidm.brushnbid.data.ObraInput
 import com.gidm.brushnbid.data.ObraSummary
+import com.gidm.brushnbid.data.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -80,12 +82,12 @@ class ObraController {
 
     // Crear una nueva obra
     fun createObra(
-        obra: Obra,
-        onSuccess: (Obra) -> Unit,
+        obra: ObraInput,
+        onSuccess: (ObraInput) -> Unit,
         onError: (String) -> Unit
     ) {
-        apiService.createObra(obra).enqueue(object : Callback<Obra> {
-            override fun onResponse(call: Call<Obra>, response: Response<Obra>) {
+        apiService.createObra(obra).enqueue(object : Callback<ObraInput> {
+            override fun onResponse(call: Call<ObraInput>, response: Response<ObraInput>) {
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) } ?: onError("Error al crear obra")
                 } else {
@@ -93,9 +95,10 @@ class ObraController {
                 }
             }
 
-            override fun onFailure(call: Call<Obra>, t: Throwable) {
+            override fun onFailure(call: Call<ObraInput>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
+
         })
     }
 

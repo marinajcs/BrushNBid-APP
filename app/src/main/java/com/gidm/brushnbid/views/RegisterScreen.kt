@@ -125,7 +125,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            enabled = allFieldsFilled && isPasswordValid,  // Deshabilitar el botón si la contraseña no es válida
+            enabled = allFieldsFilled && isPasswordValid,
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (allFieldsFilled && isPasswordValid) Color.Black else colorResource(id = R.color.dark_gray)
             ),

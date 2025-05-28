@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.gidm.brushnbid.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import com.gidm.brushnbid.views.AddMenuScreen
+import com.gidm.brushnbid.views.AddObraScreen
 import com.gidm.brushnbid.views.AddSubastaScreen
 import com.gidm.brushnbid.views.ConfigProfileScreen
 import com.gidm.brushnbid.views.FirstStartScreen
@@ -176,6 +177,18 @@ fun AppNavigation(
                 },
                 onSubmit = {
                     navController.navigate("auctions")
+                }
+            )
+        }
+
+        composable("addObra") {
+            AddObraScreen (
+                navController = navController,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSubmit = {
+                    navController.navigate("profile")
                 }
             )
         }

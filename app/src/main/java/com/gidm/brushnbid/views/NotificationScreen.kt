@@ -69,7 +69,7 @@ fun NotificationScreen(navController: NavController) {
                 selectedItem = BottomNavItem.NOTIFICATIONS,
                 onHomeClick = { navController.navigate("home") },
                 onAuctionsClick = { navController.navigate("auctions") },
-                onCreateClick = { /* lógica para crear */ },
+                onCreateClick = { navController.navigate("addMenu") },
                 onNotificationsClick = { navController.navigate("notifications") },
                 onProfileClick = { navController.navigate("profile") }
             )

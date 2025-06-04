@@ -20,3 +20,12 @@ data class Subasta(
     val duracion: Int?,
     val adjudicado: Boolean
 )
+
+data class SubastaInfo(
+    @SerializedName("obra_id") val obraId: Int,
+    @SerializedName("obra_nombre") val obraNombre: String,
+    @SerializedName("vendedor_fullname") val vendedor: String,
+    @SerializedName("puja_actual") val pujaActual: String,
+    @SerializedName("fecha_fin") val fechaFin: String,
+    @SerializedName("obra_imagen") val image: String
+)

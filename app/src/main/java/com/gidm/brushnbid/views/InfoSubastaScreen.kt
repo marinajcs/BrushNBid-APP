@@ -1,6 +1,5 @@
 package com.gidm.brushnbid.views
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,11 +28,15 @@ import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
+import com.gidm.brushnbid.controllers.SubastaController
+import com.gidm.brushnbid.data.SubastaInfo
 import java.time.ZonedDateTime
 import java.time.ZoneId
 import java.time.LocalDateTime
 import android.os.CountDownTimer
 import androidx.compose.runtime.*
+import coil.compose.AsyncImage
+import java.io.File
 import java.time.Duration
 import java.util.Locale
 
@@ -43,26 +46,38 @@ fun InfoSubastaScreen(
     onBack: () -> Unit,
     navController: NavController
 ) {
-    val fechaFinUtc : String? = "2025-06-04T22:00:00Z"
-    val localFechaFin = remember(fechaFinUtc) {
-        fechaFinUtc?.let { parseUtcToLocal(it) }
-    }
+    val subastaController = remember { SubastaController() }
+    var subasta by remember { mutableStateOf<SubastaInfo?>(null) }
     var tiempoRestante by remember { mutableStateOf(Duration.ZERO) }
+    var cantidadPuja by remember { mutableStateOf("") }
+    val allFieldsFilled = cantidadPuja.trim().isNotEmpty()
 
-    LaunchedEffect(localFechaFin) {
-        localFechaFin?.let { fin ->
-            val ahora = LocalDateTime.now()
-            val duracion = Duration.between(ahora, fin)
-            object : CountDownTimer(duracion.toMillis(), 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    tiempoRestante = Duration.ofMillis(millisUntilFinished)
-                }
+    LaunchedEffect(subastaId) {
+        subastaController.getSubastaInfoById(
+            id = subastaId,
+            onSuccess = { info ->
+                subasta = info
 
-                override fun onFinish() {
-                    tiempoRestante = Duration.ZERO
+                // Si hay fecha de fin, inicia temporizador
+                info.fechaFin.let { fechaFinUtc ->
+                    val localFechaFin = parseUtcToLocal(fechaFinUtc)
+                    val ahora = LocalDateTime.now()
+                    val duracion = Duration.between(ahora, localFechaFin)
+                    object : CountDownTimer(duracion.toMillis(), 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            tiempoRestante = Duration.ofMillis(millisUntilFinished)
+                        }
+
+                        override fun onFinish() {
+                            tiempoRestante = Duration.ZERO
+                        }
+                    }.start()
                 }
-            }.start()
-        }
+            },
+            onError = {
+                // Manejar error
+            }
+        )
     }
 
     val horas = tiempoRestante.toHours()
@@ -105,27 +120,29 @@ fun InfoSubastaScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Image(
-                    painter = painterResource(id = R.drawable.print_art),
-                    contentDescription = "Imagen de obra",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(350.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .align(Alignment.CenterHorizontally)
-                )
+                if (subasta?.image?.isNotBlank() == true && File(subasta!!.image).exists()) {
+                    AsyncImage(
+                        model = File(subasta!!.image),
+                        contentDescription = "Imagen de obra",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .align(Alignment.CenterHorizontally)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Ajedrez de cerámica",
+                    text = subasta?.obraNombre ?: "Ajedrez de cerámica",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
 
                 Text(
-                    text = "Autoría",
+                    text = subasta?.vendedor ?: "Autoría",
                     fontSize = 14.sp,
                     color = colorResource(id = R.color.main_color)
                 )
@@ -143,7 +160,7 @@ fun InfoSubastaScreen(
                             RoundedCornerShape(12.dp)
                         )
                         .clickable {
-                            navController.navigate("infoObra/1")
+                            navController.navigate("infoObra/${subasta?.obraId}")
                         }
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -167,35 +184,61 @@ fun InfoSubastaScreen(
 
                 // Botones de puja
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = { /* mostrar puja actual */ },
+                        onClick = { },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.main_color)),
                         shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
                     ) {
-                        Text("Puja actual", color = Color.White)
+                        Text(
+                            text = subasta?.pujaActual ?: "Puja actual",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    OutlinedButton(
-                        onClick = { /* lógica de puja */ },
+                    OutlinedTextField(
+                        value = cantidadPuja,
+                        onValueChange = {
+                            if (it.matches(Regex("^\\d{0,7}(\\.\\d{0,2})?$"))) {
+                                cantidadPuja = it
+                            }
+                        },
+                        label = {
+                            Text("¿Cuánto pujar?", fontSize = 16.sp)
+                        },
+                        singleLine = true,
                         shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, colorResource(id = R.color.main_color)),
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.main_color))
-                    ) {
-                        Text("Cuánto pujar")
-                    }
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 16.sp,
+                            lineHeight = 18.sp
+                        ),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = colorResource(id = R.color.main_color),
+                            unfocusedBorderColor = colorResource(id = R.color.main_color),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Temporizador
-                if (localFechaFin != null) {
+                if (subasta?.fechaFin != null) {
                     Text(
                         text = String.format(
                             Locale.getDefault(),
@@ -229,9 +272,17 @@ fun InfoSubastaScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
+                    ),
+                    enabled = allFieldsFilled
                 ) {
-                    Text("Pujar", color = Color.White, fontSize = 16.sp)
+                    Text(
+                        "Pujar",
+                        color = if (allFieldsFilled) Color.White else Color.Black,
+                        fontSize = 16.sp,
+                        lineHeight = 18.sp
+                    )
                 }
                 Spacer(modifier = Modifier.height(15.dp))
             }

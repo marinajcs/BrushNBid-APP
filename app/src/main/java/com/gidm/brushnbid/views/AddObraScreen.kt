@@ -28,6 +28,12 @@ import com.gidm.brushnbid.controllers.ObraController
 import com.gidm.brushnbid.data.ObraInput
 import com.gidm.brushnbid.data.UserPreferences
 import java.io.File
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
+import coil.compose.AsyncImage
+
 
 @Composable
 fun AddObraScreen(
@@ -38,18 +44,42 @@ fun AddObraScreen(
     val context = LocalContext.current
     val userPrefs = remember { UserPreferences(context) }
     val obraController = remember { ObraController() }
-    val imgid = R.drawable.print_art
 
     var titulo by remember { mutableStateOf("") }
     var tipo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var userId by remember { mutableStateOf<Int?>(null) }
+
     var obrasDir by remember { mutableStateOf<File?>(null) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var localImagePath by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         userId = userPrefs.getUserId()
         obrasDir = obraController.getObraImageDir(context)
     }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+
+            // Copiar a la carpeta local
+            obrasDir?.let { dir ->
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val filename = "obra_${System.currentTimeMillis()}.jpg"
+                val file = File(dir, filename)
+                inputStream?.use { input ->
+                    file.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                localImagePath = file.absolutePath
+            }
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -85,15 +115,23 @@ fun AddObraScreen(
                     .align(Alignment.CenterHorizontally)
                     .clip(RoundedCornerShape(16.dp))
                     .background(colorResource(id = R.color.main_color))
-                    .clickable { /* lógica para seleccionar imagen */ },
+                    .clickable { launcher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = "Seleccionar imagen",
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+                if (selectedImageUri != null) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Imagen seleccionada",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Seleccionar imagen",
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -105,6 +143,7 @@ fun AddObraScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             val allFieldsFilled = userId != null
+                    && localImagePath != null
                     && titulo.isNotBlank()
                     && tipo.isNotBlank()
 
@@ -115,8 +154,8 @@ fun AddObraScreen(
                         autoriaId = userId!!,
                         propiedadId = userId!!,
                         tipo = tipo,
-                        descripcion = descripcion//,
-                        //imagen = ""
+                        descripcion = descripcion,
+                        imagen = localImagePath ?: ""
                     )
                     obraController.createObra(
                         obra = newObra,
@@ -185,7 +224,7 @@ fun SelectTipoField(
     label: String = "Tipo"
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf("escultura", "pintura", "fotografía", "otras")
+    val options = listOf("escultura", "pintura", "serigrafia", "fotografia", "otras")
 
     ExposedDropdownMenuBox(
         expanded = expanded,

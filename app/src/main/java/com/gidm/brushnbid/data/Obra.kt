@@ -39,6 +39,6 @@ data class ObraInput(
     @SerializedName("autoria_id") val autoriaId: Int,
     @SerializedName("propiedad_id") val propiedadId: Int,
     val tipo: String,
-    val descripcion: String//,
-    //val imagen: String
+    val descripcion: String,
+    val imagen: String
 )

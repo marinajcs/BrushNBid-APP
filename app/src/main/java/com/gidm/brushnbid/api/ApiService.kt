@@ -10,6 +10,7 @@ import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
+import com.gidm.brushnbid.data.SubastaInfo
 import com.gidm.brushnbid.data.SubastaInput
 import com.gidm.brushnbid.data.SubastaSummary
 import com.gidm.brushnbid.data.User
@@ -83,9 +84,20 @@ interface ApiService {
     @GET("/subastas/activas")
     fun getActiveSubastas(): Call<List<SubastaSummary>>
 
+    // Obtener subastas activas de un user
+    @GET("/subastas/activas/user/{id}")
+    fun getActiveSubastasByUser(@Path("id") id: Int): Call<List<SubastaSummary>>
+
+    // Obtener subastas finalizadas de un user
+    @GET("/subastas/finalizadas/user/{id}")
+    fun getFinishedSubastasByUser(@Path("id") id: Int): Call<List<SubastaSummary>>
+
     // Obtener una subasta por ID
     @GET("/subastas/{id}")
     fun getSubastaById(@Path("id") id: Int): Call<Subasta>
+
+    @GET("/subastas/{id}/info")
+    fun getSubastaInfoById(@Path("id") id: Int): Call<SubastaInfo>
 
     // Crear una nueva subasta
     @POST("/subastas")

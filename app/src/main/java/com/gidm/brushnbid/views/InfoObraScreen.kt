@@ -97,16 +97,6 @@ fun InfoObraScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .align(Alignment.CenterHorizontally)
                 )
-            } else {
-                Image(
-                    painter = painterResource( id = R.drawable.print_art),
-                    contentDescription = "Imagen por defecto",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .align(Alignment.CenterHorizontally)
-                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))

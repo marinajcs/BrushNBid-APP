@@ -4,6 +4,7 @@ import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.Subasta
+import com.gidm.brushnbid.data.SubastaInfo
 import com.gidm.brushnbid.data.SubastaSummary
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,10 +47,44 @@ class SubastaController {
         })
     }
 
+    // Obtener subastas activas de un user
+    fun getActiveSubastasByUser(id: Int, onSuccess: (List<SubastaSummary>) -> Unit, onError: (String) -> Unit) {
+        apiService.getActiveSubastasByUser(id).enqueue(object : Callback<List<SubastaSummary>> {
+            override fun onResponse(call: Call<List<SubastaSummary>>, response: Response<List<SubastaSummary>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Lista vacía")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<SubastaSummary>>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    // Obtener subastas finalizadas de un user
+    fun getFinishedSubastasByUser(id: Int, onSuccess: (List<SubastaSummary>) -> Unit, onError: (String) -> Unit) {
+        apiService.getFinishedSubastasByUser(id).enqueue(object : Callback<List<SubastaSummary>> {
+            override fun onResponse(call: Call<List<SubastaSummary>>, response: Response<List<SubastaSummary>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Lista vacía")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<SubastaSummary>>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
     // Obtener una subasta por ID
-    fun getSubastaById(id: Int, onSuccess: (Subasta) -> Unit, onError: (String) -> Unit) {
-        apiService.getSubastaById(id).enqueue(object : Callback<Subasta> {
-            override fun onResponse(call: Call<Subasta>, response: Response<Subasta>) {
+    fun getSubastaInfoById(id: Int, onSuccess: (SubastaInfo) -> Unit, onError: (String) -> Unit) {
+        apiService.getSubastaInfoById(id).enqueue(object : Callback<SubastaInfo> {
+            override fun onResponse(call: Call<SubastaInfo>, response: Response<SubastaInfo>) {
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) } ?: onError("Subasta no encontrada")
                 } else {
@@ -57,7 +92,7 @@ class SubastaController {
                 }
             }
 
-            override fun onFailure(call: Call<Subasta>, t: Throwable) {
+            override fun onFailure(call: Call<SubastaInfo>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

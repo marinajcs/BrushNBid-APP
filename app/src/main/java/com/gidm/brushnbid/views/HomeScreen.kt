@@ -49,7 +49,7 @@ fun SubastasMainScreen(navController: NavController) {
                         subastaId = subasta.subastaId,
                         obra = subasta.obra,
                         vendedor = subasta.vendedor,
-                        image = "https://storage.googleapis.com/pod_public/1300/234444.jpg"
+                        image = subasta.image
                     )
                 }
                 subastasActivas = summaries

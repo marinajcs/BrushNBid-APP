@@ -1,20 +1,6 @@
 package com.gidm.brushnbid.data
 
 import com.google.gson.annotations.SerializedName
-/*
-data class Subasta(
-    val obra: String,
-    val vendedor: String,
-    val image: String,
-    val precioInicial: Double = 0.0,
-    val fechaInicio: String = "",
-    val duracion: Double = 7.0,
-    val fechaFinal: String? = "",
-    val incremento: Double? = null, // Incremento mínimo de puja (opcional)
-    val precioReserva: Double? = null, // Opcional y oculto
-    //val compraInmediata: Double? = null // Compra inmediata (opcional)
-)
-*/
 
 data class SubastaSummary(
     @SerializedName("subasta_id") val subastaId: Int,

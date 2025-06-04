@@ -18,7 +18,7 @@ data class ObraSummary(
     val id: Int,
     val titulo: String,
     val estado: Estado,
-    val imagen: Int
+    val imagen: String
 )
 
 enum class Estado{
@@ -31,7 +31,7 @@ data class ObraInfo(
     @SerializedName("propiedad_nombre") val propiedad: String,
     val tipo: String,
     val descripcion: String,
-    val imagen: Int
+    val imagen: String
 )
 
 data class ObraInput(
@@ -39,6 +39,6 @@ data class ObraInput(
     @SerializedName("autoria_id") val autoriaId: Int,
     @SerializedName("propiedad_id") val propiedadId: Int,
     val tipo: String,
-    val descripcion: String,
-    val imagen: String
+    val descripcion: String//,
+    //val imagen: String
 )

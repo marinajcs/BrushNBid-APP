@@ -1,5 +1,6 @@
 package com.gidm.brushnbid.controllers
 
+import android.content.Context
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Obra
@@ -10,6 +11,7 @@ import com.gidm.brushnbid.data.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class ObraController {
     private val apiService = ApiClient.retrofit.create(ApiService::class.java)
@@ -144,6 +146,13 @@ class ObraController {
             }
         })
     }
+
+    fun getObraImageDir(context: Context): File {
+        val dir = File(context.filesDir, "obras")
+        if (!dir.exists()) dir.mkdirs()
+        return dir
+    }
+
 }
 
 

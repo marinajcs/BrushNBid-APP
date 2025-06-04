@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import com.gidm.brushnbid.controllers.ObraController
+import java.io.File
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -60,7 +61,6 @@ fun ProfileScreen(navController: NavController) {
     var fullname by remember { mutableStateOf("") }
     var obras by remember { mutableStateOf(listOf<ObraSummary>()) }
     val obraController = remember { ObraController() }
-    val imgid = R.drawable.print_art
 
     LaunchedEffect(Unit) {
         username = userPrefs.getUsername() ?: "Username"
@@ -79,7 +79,7 @@ fun ProfileScreen(navController: NavController) {
                             id = obra.id,
                             titulo = obra.titulo,
                             estado = estado,
-                            imagen = imgid
+                            imagen = obra.imagen
                         )
                     }
                 },
@@ -167,17 +167,17 @@ fun ObraCard(obra: ObraSummary, navController: NavController) {
         modifier = Modifier
             .width(160.dp)
     ) {
-        Image(
-            painter = painterResource(id = obra.imagen),
+        AsyncImage(
+            model = File(obra.imagen),
             contentDescription = "Obra",
-            colorFilter = if (obra.estado == Estado.VENDIDA) grayScaleFilter else null,
-            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .height(190.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable {
                     navController.navigate("infoObra/${obra.id}")
-                }
+                },
+            contentScale = ContentScale.Fit,
+            colorFilter = if (obra.estado == Estado.VENDIDA) grayScaleFilter else null
         )
         Text(
             text = obra.titulo,

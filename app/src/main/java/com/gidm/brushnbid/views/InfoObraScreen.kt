@@ -1,6 +1,7 @@
 package com.gidm.brushnbid.views
 
 import androidx.compose.foundation.Image
+import java.io.File
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -29,7 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.controllers.ObraController
 import com.gidm.brushnbid.data.ObraInfo
@@ -62,7 +64,7 @@ fun InfoObraScreen(
                 selectedItem = BottomNavItem.PROFILE,
                 onHomeClick = { navController.navigate("home") },
                 onAuctionsClick = { navController.navigate("auctions") },
-                onCreateClick = { /* lógica para crear */ },
+                onCreateClick = { navController.navigate("addMenu") },
                 onNotificationsClick = { navController.navigate("notifications") },
                 onProfileClick = { navController.navigate("profile") }
             )
@@ -85,15 +87,27 @@ fun InfoObraScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Image(
-                painter = painterResource(id = R.drawable.print_art),
-                contentDescription = "Imagen de obra",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .align(Alignment.CenterHorizontally)
-            )
+            if (obra?.imagen?.isNotBlank() == true && File(obra!!.imagen).exists()) {
+                AsyncImage(
+                    model = File(obra!!.imagen),
+                    contentDescription = "Imagen de obra",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .align(Alignment.CenterHorizontally)
+                )
+            } else {
+                Image(
+                    painter = painterResource( id = R.drawable.print_art),
+                    contentDescription = "Imagen por defecto",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

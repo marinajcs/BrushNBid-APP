@@ -37,17 +37,14 @@ fun ConfigProfileScreen(
     val userPrefs = remember { UserPreferences(context) }
     val coroutineScope = rememberCoroutineScope()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.app_background))
             .padding(24.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopStart) // contenido arriba
-        ) {
+        // Parte superior (contenido principal)
+        Column(modifier = Modifier.fillMaxWidth()) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Volver",
@@ -77,6 +74,10 @@ fun ConfigProfileScreen(
             ConfigOption(text = "Historial de subastas") { /* Navegar a historial subastas */ }
         }
 
+        // Spacer para empujar el botón hacia abajo sin que se corte
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Botón de cerrar sesión
         OutlinedButton(
             onClick = {
                 coroutineScope.launch {
@@ -86,8 +87,7 @@ fun ConfigProfileScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
-                .align(Alignment.BottomCenter),  // Botón pegado abajo
+                .height(48.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = colorResource(id = R.color.main_color)),
             border = BorderStroke(1.dp, colorResource(id = R.color.main_color))
@@ -100,6 +100,7 @@ fun ConfigProfileScreen(
         }
     }
 }
+
 
 @Composable
 fun ConfigOption(text: String, onClick: () -> Unit) {

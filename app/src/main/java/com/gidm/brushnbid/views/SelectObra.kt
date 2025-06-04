@@ -1,6 +1,5 @@
 package com.gidm.brushnbid.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +22,9 @@ import com.gidm.brushnbid.R
 import com.gidm.brushnbid.data.ObraSummary
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
 import com.gidm.brushnbid.data.Estado
+import java.io.File
 
 @Composable
 fun SelectObraScreen(
@@ -32,11 +32,11 @@ fun SelectObraScreen(
     onObraSelected: (ObraSummary) -> Unit = {}
 ) {
 
-    val imgid = R.drawable.print_art
+    val imgPath = "/data/data/com.gidm.brushnbid/files/obras/amanecer-abstracto.jpeg"
     val misObras = listOf(
-        ObraSummary(1, "Ajedrez", Estado.ACTIVA, imgid),
-        ObraSummary(2, "Taza de cerámica", Estado.ACTIVA, imgid),
-        ObraSummary(3, "Jarrón de cerámica", Estado.ACTIVA, imgid)
+        ObraSummary(1, "Ajedrez", Estado.ACTIVA, imgPath),
+        ObraSummary(2, "Taza de cerámica", Estado.ACTIVA, imgPath),
+        ObraSummary(3, "Jarrón de cerámica", Estado.ACTIVA, imgPath)
     )
 
     Column(
@@ -95,8 +95,8 @@ fun ObraCardItem(obra: ObraSummary, onClick: () -> Unit) {
             .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() }
     ) {
-        Image(
-            painter = painterResource(id = obra.imagen),
+        AsyncImage(
+            model = File(obra.imagen),
             contentDescription = obra.titulo,
             contentScale = ContentScale.Fit,
             modifier = Modifier

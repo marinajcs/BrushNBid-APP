@@ -26,8 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.controllers.ObraController
 import com.gidm.brushnbid.data.ObraInput
-import com.gidm.brushnbid.data.User
 import com.gidm.brushnbid.data.UserPreferences
+import java.io.File
 
 @Composable
 fun AddObraScreen(
@@ -38,15 +38,17 @@ fun AddObraScreen(
     val context = LocalContext.current
     val userPrefs = remember { UserPreferences(context) }
     val obraController = remember { ObraController() }
+    val imgid = R.drawable.print_art
 
-    val tipoOptions = listOf("escultura", "pintura", "fotografía", "otras")
     var titulo by remember { mutableStateOf("") }
     var tipo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
-    var userId = 0
+    var userId by remember { mutableStateOf<Int?>(null) }
+    var obrasDir by remember { mutableStateOf<File?>(null) }
 
     LaunchedEffect(Unit) {
-        userId = userPrefs.getUserId()!!
+        userId = userPrefs.getUserId()
+        obrasDir = obraController.getObraImageDir(context)
     }
 
     Box(
@@ -102,18 +104,19 @@ fun AddObraScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            val allFieldsFilled = titulo.isNotBlank()
+            val allFieldsFilled = userId != null
+                    && titulo.isNotBlank()
                     && tipo.isNotBlank()
 
             Button(
                 onClick = {
                     val newObra = ObraInput(
                         titulo = titulo,
-                        autoriaId = userId,
-                        propiedadId = userId,
+                        autoriaId = userId!!,
+                        propiedadId = userId!!,
                         tipo = tipo,
-                        descripcion = descripcion,
-                        imagen = ""
+                        descripcion = descripcion//,
+                        //imagen = ""
                     )
                     obraController.createObra(
                         obra = newObra,
@@ -145,7 +148,12 @@ fun AddObraScreen(
 }
 
 @Composable
-fun AddObraInputField(value: String, onValueChange: (String) -> Unit, label: String, height: Dp = 55.dp) {
+fun AddObraInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    height: Dp = 55.dp
+) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         OutlinedTextField(
             value = value,
@@ -153,7 +161,7 @@ fun AddObraInputField(value: String, onValueChange: (String) -> Unit, label: Str
             label = { Text(label) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height),
+                .defaultMinSize(minHeight = height),
             shape = RoundedCornerShape(12.dp),
             singleLine = height <= 55.dp,
             colors = OutlinedTextFieldDefaults.colors(
@@ -168,6 +176,7 @@ fun AddObraInputField(value: String, onValueChange: (String) -> Unit, label: Str
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectTipoField(
@@ -176,7 +185,7 @@ fun SelectTipoField(
     label: String = "Tipo"
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf("Escultura", "Pintura", "Fotografía", "Otras")
+    val options = listOf("escultura", "pintura", "fotografía", "otras")
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -194,7 +203,7 @@ fun SelectTipoField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .height(55.dp),
+                .defaultMinSize(minHeight = 56.dp), // en lugar de .height(55.dp)
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = colorResource(id = R.color.main_color),
@@ -222,6 +231,7 @@ fun SelectTipoField(
         }
     }
 }
+
 
 
 @Preview(showBackground = true)

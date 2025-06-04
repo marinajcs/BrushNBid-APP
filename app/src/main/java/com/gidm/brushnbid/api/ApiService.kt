@@ -54,7 +54,7 @@ interface ApiService {
     @GET("/obras/{id}")
     fun getObraById(@Path("id") id: Int): Call<Obra>
 
-    @GET("/obras/info/{id}")
+    @GET("/obras/{id}/info")
     fun getObraInfoById(@Path("id") id: Int): Call<ObraInfo>
 
     // Obtener las obras de un usuario específico

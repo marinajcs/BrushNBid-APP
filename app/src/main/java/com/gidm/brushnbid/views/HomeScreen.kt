@@ -134,12 +134,13 @@ fun SubastasMainScreen(navController: NavController) {
                 }
             }
 
-            // Lista de subastas (simulada)
             items(subastasFiltradas) { subasta ->
                 SubastaCard(
+                    id = subasta.subastaId,
                     title = subasta.obra,
                     author = subasta.vendedor,
-                    imageUrl = subasta.image
+                    imageUrl = subasta.image,
+                    navController
                 )
             }
         }
@@ -168,7 +169,7 @@ fun FilterButton(text: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun SubastaCard(title: String, author: String, imageUrl: String) {
+fun SubastaCard(id: Int, title: String, author: String, imageUrl: String, navController: NavController) {
     val isPreview = LocalInspectionMode.current
     val painter = if (isPreview) {
         painterResource(id = R.drawable.print_art) // Usa una imagen local para Preview
@@ -196,6 +197,9 @@ fun SubastaCard(title: String, author: String, imageUrl: String) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .height(240.dp)
+                .clickable {
+                    navController.navigate("infoSubasta/${id}")
+                }
         )
     }
 }

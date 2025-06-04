@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowRight
@@ -27,6 +29,13 @@ import androidx.navigation.compose.rememberNavController
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
+import java.time.ZonedDateTime
+import java.time.ZoneId
+import java.time.LocalDateTime
+import android.os.CountDownTimer
+import androidx.compose.runtime.*
+import java.time.Duration
+import java.util.Locale
 
 @Composable
 fun InfoSubastaScreen(
@@ -34,6 +43,32 @@ fun InfoSubastaScreen(
     onBack: () -> Unit,
     navController: NavController
 ) {
+    val fechaFinUtc : String? = "2025-06-04T22:00:00Z"
+    val localFechaFin = remember(fechaFinUtc) {
+        fechaFinUtc?.let { parseUtcToLocal(it) }
+    }
+    var tiempoRestante by remember { mutableStateOf(Duration.ZERO) }
+
+    LaunchedEffect(localFechaFin) {
+        localFechaFin?.let { fin ->
+            val ahora = LocalDateTime.now()
+            val duracion = Duration.between(ahora, fin)
+            object : CountDownTimer(duracion.toMillis(), 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    tiempoRestante = Duration.ofMillis(millisUntilFinished)
+                }
+
+                override fun onFinish() {
+                    tiempoRestante = Duration.ZERO
+                }
+            }.start()
+        }
+    }
+
+    val horas = tiempoRestante.toHours()
+    val minutos = tiempoRestante.toMinutes() % 60
+    val segundos = tiempoRestante.seconds % 60
+
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),
         bottomBar = {
@@ -41,7 +76,7 @@ fun InfoSubastaScreen(
                 selectedItem = BottomNavItem.HOME,
                 onHomeClick = { navController.navigate("home") },
                 onAuctionsClick = { navController.navigate("auctions") },
-                onCreateClick = { /* lógica */ },
+                onCreateClick = { navController.navigate("addMenu") },
                 onNotificationsClick = { navController.navigate("notifications") },
                 onProfileClick = { navController.navigate("profile") }
             )
@@ -57,6 +92,7 @@ fun InfoSubastaScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
                 Icon(
@@ -106,7 +142,9 @@ fun InfoSubastaScreen(
                             colorResource(id = R.color.main_color),
                             RoundedCornerShape(12.dp)
                         )
-                        .clickable { navController.navigate("infoObra/1") }
+                        .clickable {
+                            navController.navigate("infoObra/1")
+                        }
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -154,16 +192,34 @@ fun InfoSubastaScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Temporizador
-                Text(
-                    text = "00:00:00",
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black
-                )
+                if (localFechaFin != null) {
+                    Text(
+                        text = String.format(
+                            Locale.getDefault(),
+                            "%02d:%02d:%02d",
+                            horas,
+                            minutos,
+                            segundos
+                        ),
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        fontSize = 16.sp,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(id = R.color.main_color)
+                    )
+                } else {
+                    Text(
+                        text = "Sin fecha de finalización",
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        fontSize = 16.sp,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Gray
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -189,3 +245,9 @@ fun InfoSubastaScreenPreview() {
     val navController = rememberNavController()
     InfoSubastaScreen(1, onBack = {}, navController = navController)
 }
+
+fun parseUtcToLocal(utcString: String): LocalDateTime {
+    val zonedUtc = ZonedDateTime.parse(utcString)
+    return zonedUtc.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
+}
+

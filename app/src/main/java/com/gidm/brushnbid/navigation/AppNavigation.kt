@@ -25,6 +25,7 @@ import com.gidm.brushnbid.views.NotificationScreen
 import com.gidm.brushnbid.views.ProfileScreen
 import com.gidm.brushnbid.views.SelectObraScreen
 import com.gidm.brushnbid.views.SubastasMainScreen
+import com.gidm.brushnbid.views.HistorialScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -161,6 +162,17 @@ fun AppNavigation(
                     subastaId = subastaId,
                     onBack = { navController.popBackStack() },
                     navController = navController
+                )
+            }
+        }
+
+        composable("historialPujas/{subastaId}") { backStackEntry ->
+            val subastaId = backStackEntry.arguments?.getString("subastaId")?.toIntOrNull()
+
+            if (subastaId != null) {
+                HistorialScreen(
+                    subastaId = subastaId,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

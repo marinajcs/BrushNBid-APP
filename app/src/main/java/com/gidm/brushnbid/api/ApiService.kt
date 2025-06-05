@@ -8,6 +8,7 @@ import com.gidm.brushnbid.data.ObraInfo
 import com.gidm.brushnbid.data.ObraInput
 import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
+import com.gidm.brushnbid.data.PujaInfo
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInfo
@@ -122,6 +123,10 @@ interface ApiService {
     // Obtener las pujas de una subasta
     @GET("/subastas/{id}/pujas")
     fun getPujasBySubastaId(@Path("id") id: Int): Call<List<Puja>>
+
+    // Obtener la info de las pujas de una subasta
+    @GET("/subastas/{id}/historial")
+    fun getHistorialBySubastaId(@Path("id") id: Int): Call<List<PujaInfo>>
 
     // Realizar una puja
     @POST("/subastas/{id}/pujas")

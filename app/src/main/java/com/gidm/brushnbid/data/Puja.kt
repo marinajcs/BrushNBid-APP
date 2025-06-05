@@ -13,3 +13,9 @@ data class PujaInput(
     @SerializedName("user_id") val userId: Int,
     val cantidad: Double
 )
+
+data class PujaInfo(
+    val username: String,
+    val cantidad: Double,
+    val fecha: String
+)

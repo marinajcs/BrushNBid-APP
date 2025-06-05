@@ -28,8 +28,6 @@ import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 import com.gidm.brushnbid.controllers.SubastaController
 import com.gidm.brushnbid.data.SubastaInfo
-import java.time.ZonedDateTime
-import java.time.ZoneId
 import java.time.LocalDateTime
 import android.os.CountDownTimer
 import android.widget.Toast
@@ -41,6 +39,7 @@ import java.io.File
 import java.time.Duration
 import java.util.Locale
 import com.gidm.brushnbid.data.PujaInput
+import com.gidm.brushnbid.util.parseUtcToLocal
 
 @Composable
 fun InfoSubastaScreen(
@@ -176,6 +175,39 @@ fun InfoSubastaScreen(
                 ) {
                     Text(
                         text = "Información de la obra",
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowRight,
+                        contentDescription = "Más información",
+                        tint = colorResource(id = R.color.main_color)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Historial de pujas
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            1.dp,
+                            colorResource(id = R.color.main_color),
+                            RoundedCornerShape(12.dp)
+                        )
+                        .clickable {
+                            navController.navigate("historialPujas/${subasta?.subastaId}")
+                        }
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Historial de pujas",
                         fontSize = 14.sp,
                         color = Color.Black,
                         lineHeight = 16.sp,
@@ -340,10 +372,5 @@ fun InfoSubastaScreen(
 fun InfoSubastaScreenPreview() {
     val navController = rememberNavController()
     InfoSubastaScreen(1, onBack = {}, navController = navController)
-}
-
-fun parseUtcToLocal(utcString: String): LocalDateTime {
-    val zonedUtc = ZonedDateTime.parse(utcString)
-    return zonedUtc.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
 }
 

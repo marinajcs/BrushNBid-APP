@@ -3,6 +3,7 @@ package com.gidm.brushnbid.controllers
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Puja
+import com.gidm.brushnbid.data.PujaInfo
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInfo
@@ -113,6 +114,23 @@ class SubastaController {
             }
 
             override fun onFailure(call: Call<SubastaInfo>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
+    // Obtener una subasta por ID
+    fun getHistorialPujas(id: Int, onSuccess: (List<PujaInfo>) -> Unit, onError: (String) -> Unit) {
+        apiService.getHistorialBySubastaId(id).enqueue(object : Callback<List<PujaInfo>> {
+            override fun onResponse(call: Call<List<PujaInfo>>, response: Response<List<PujaInfo>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Historial no encontrado")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<PujaInfo>>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

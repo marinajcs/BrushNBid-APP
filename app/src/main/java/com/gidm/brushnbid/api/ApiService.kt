@@ -121,7 +121,7 @@ interface ApiService {
 
     // Realizar una puja
     @POST("/subastas/{id}/pujas")
-    fun addPuja(@Path("id") subastaId: Int, @Body puja: Puja): Call<Puja>
+    fun addPuja(@Path("id") subastaId: Int, @Body puja: PujaInput): Call<PujaInput>
 
     // Adjudicar la subasta al mejor postor
     @POST("/subastas/{id}/adjudicar")

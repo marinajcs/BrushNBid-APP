@@ -3,10 +3,12 @@ package com.gidm.brushnbid.controllers
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Puja
+import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInfo
 import com.gidm.brushnbid.data.SubastaInput
 import com.gidm.brushnbid.data.SubastaSummary
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -187,20 +189,34 @@ class SubastaController {
     // Realizar una puja en una subasta
     fun addPuja(
         subastaId: Int,
-        puja: Puja,
-        onSuccess: (Puja) -> Unit,
+        puja: PujaInput,
+        onSuccess: (PujaInput) -> Unit,
         onError: (String) -> Unit
     ) {
-        apiService.addPuja(subastaId, puja).enqueue(object : Callback<Puja> {
-            override fun onResponse(call: Call<Puja>, response: Response<Puja>) {
+        apiService.addPuja(subastaId, puja).enqueue(object : Callback<PujaInput> {
+            override fun onResponse(call: Call<PujaInput>, response: Response<PujaInput>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { onSuccess(it) } ?: onError("Error al hacer la puja")
+                    response.body()?.let {
+                        onSuccess(it)
+                    } ?: onError("Respuesta vacía del servidor")
                 } else {
-                    onError("Error código: ${response.code()}")
+                    val errorBodyStr = response.errorBody()?.string()
+                    val errorMessage = if (!errorBodyStr.isNullOrEmpty()) {
+                        try {
+                            val json = JSONObject(errorBodyStr)
+                            json.getString("message")
+                        } catch (e: Exception) {
+                            "Error del servidor (${response.code()})"
+                        }
+                    } else {
+                        "Error inesperado (${response.code()})"
+                    }
+
+                    onError(errorMessage)
                 }
             }
 
-            override fun onFailure(call: Call<Puja>, t: Throwable) {
+            override fun onFailure(call: Call<PujaInput>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

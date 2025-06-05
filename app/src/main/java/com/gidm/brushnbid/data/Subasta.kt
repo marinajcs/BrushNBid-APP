@@ -21,6 +21,7 @@ data class Subasta(
 )
 
 data class SubastaInfo(
+    @SerializedName("subasta_id") val subastaId: Int,
     @SerializedName("obra_id") val obraId: Int,
     @SerializedName("obra_nombre") val obraNombre: String,
     @SerializedName("vendedor_fullname") val vendedor: String,

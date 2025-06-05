@@ -1,6 +1,5 @@
 package com.gidm.brushnbid.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,11 +32,15 @@ import java.time.ZonedDateTime
 import java.time.ZoneId
 import java.time.LocalDateTime
 import android.os.CountDownTimer
+import android.widget.Toast
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import com.gidm.brushnbid.data.UserPreferences
 import java.io.File
 import java.time.Duration
 import java.util.Locale
+import com.gidm.brushnbid.data.PujaInput
 
 @Composable
 fun InfoSubastaScreen(
@@ -46,13 +48,19 @@ fun InfoSubastaScreen(
     onBack: () -> Unit,
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    var userId by remember { mutableStateOf<Int?>(null) }
     val subastaController = remember { SubastaController() }
     var subasta by remember { mutableStateOf<SubastaInfo?>(null) }
     var tiempoRestante by remember { mutableStateOf(Duration.ZERO) }
     var cantidadPuja by remember { mutableStateOf("") }
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     val allFieldsFilled = cantidadPuja.trim().isNotEmpty()
 
     LaunchedEffect(subastaId) {
+        userId = userPrefs.getUserId()
         subastaController.getSubastaInfoById(
             id = subastaId,
             onSuccess = { info ->
@@ -235,6 +243,15 @@ fun InfoSubastaScreen(
                     )
                 }
 
+                if (!errorMessage.isNullOrBlank()) {
+                    Text(
+                        text = errorMessage!!,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Temporizador
@@ -267,7 +284,35 @@ fun InfoSubastaScreen(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 Button(
-                    onClick = { /* pujar */ },
+                    onClick = {
+                        val id = subasta?.subastaId ?: return@Button
+                        val cantidad = cantidadPuja.toDoubleOrNull()
+                        val uid = userId ?: return@Button
+
+                        if (cantidad != null) {
+                            val input = PujaInput(userId = uid, cantidad = cantidad)
+                            subastaController.addPuja(
+                                subastaId = id,
+                                puja = input,
+                                onSuccess = {
+                                    errorMessage = null
+                                    cantidadPuja = ""
+                                    Toast.makeText(context, "Puja realizada con éxito", Toast.LENGTH_SHORT).show()
+
+                                    subastaController.getSubastaInfoById(
+                                        id = subastaId,
+                                        onSuccess = { info -> subasta = info },
+                                        onError = { errorMessage = "No se pudo actualizar la subasta" }
+                                    )
+                                },
+                                onError = {
+                                    errorMessage = it
+                                }
+                            )
+                        } else {
+                            errorMessage = "Introduce una cantidad válida"
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

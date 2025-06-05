@@ -92,6 +92,10 @@ interface ApiService {
     @GET("/subastas/activas/user/{id}")
     fun getActiveSubastasByUser(@Path("id") id: Int): Call<List<SubastaSummary>>
 
+    // Obtener subastas seguidas por un user
+    @GET("/subastas/seguidas/user/{id}")
+    fun getFollowedSubastasByUser(@Path("id") id: Int): Call<List<SubastaSummary>>
+
     // Obtener subastas finalizadas de un user
     @GET("/subastas/finalizadas/user/{id}")
     fun getFinishedSubastasByUser(@Path("id") id: Int): Call<List<SubastaSummary>>

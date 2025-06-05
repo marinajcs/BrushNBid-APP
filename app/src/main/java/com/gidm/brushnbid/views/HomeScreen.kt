@@ -27,14 +27,20 @@ import com.gidm.brushnbid.controllers.SubastaController
 import com.gidm.brushnbid.navigation.BottomNavBar
 import com.gidm.brushnbid.navigation.BottomNavItem
 import com.gidm.brushnbid.data.SubastaSummary
+import androidx.compose.ui.platform.LocalContext
+import com.gidm.brushnbid.data.UserPreferences
 
 @Composable
 fun SubastasMainScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf("activas") }
     var subastas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
     var subastasActivas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
+    var subastasSeguidas: List<SubastaSummary> by remember { mutableStateOf(listOf()) }
     val subastaController = remember { SubastaController() }
     var searchText by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
 
     val subastasFiltradas = subastas.filter {
         it.obra.contains(searchText, ignoreCase = true) ||
@@ -60,13 +66,20 @@ fun SubastasMainScreen(navController: NavController) {
                 subastas = emptyList()
             }
         )
-    }
 
-    val subastasSeguidas = listOf(
-        // https://storage.googleapis.com/pod_public/1300/234444.jpg
-        SubastaSummary(10, "Escultura moderna", "Carlos Ruiz", "https://storage.googleapis.com/pod_public/1300/234445.jpg"),
-        SubastaSummary(11, "Retrato clásico", "Ana Martínez", "https://storage.googleapis.com/pod_public/1300/234446.jpg")
-    )
+        val userId = userPrefs.getUserId()
+        if (userId != null) {
+            subastaController.getFollowedSubastasByUser(
+                id = userId,
+                onSuccess = { listaSeguidas ->
+                    subastasSeguidas = listaSeguidas
+                },
+                onError = {
+                    subastasSeguidas = emptyList()
+                }
+            )
+        }
+    }
 
     Scaffold(
         containerColor = colorResource(id = R.color.app_background),

@@ -84,6 +84,23 @@ class SubastaController {
         })
     }
 
+    // Obtener subastas seguidas por un user
+    fun getFollowedSubastasByUser(id: Int, onSuccess: (List<SubastaSummary>) -> Unit, onError: (String) -> Unit) {
+        apiService.getFollowedSubastasByUser(id).enqueue(object : Callback<List<SubastaSummary>> {
+            override fun onResponse(call: Call<List<SubastaSummary>>, response: Response<List<SubastaSummary>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Lista vacía")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<SubastaSummary>>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
     // Obtener una subasta por ID
     fun getSubastaInfoById(id: Int, onSuccess: (SubastaInfo) -> Unit, onError: (String) -> Unit) {
         apiService.getSubastaInfoById(id).enqueue(object : Callback<SubastaInfo> {

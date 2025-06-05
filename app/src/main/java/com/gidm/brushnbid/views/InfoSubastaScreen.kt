@@ -59,7 +59,7 @@ fun InfoSubastaScreen(
                 subasta = info
 
                 // Si hay fecha de fin, inicia temporizador
-                info.fechaFin.let { fechaFinUtc ->
+                info.fechaFin?.let { fechaFinUtc ->
                     val localFechaFin = parseUtcToLocal(fechaFinUtc)
                     val ahora = LocalDateTime.now()
                     val duracion = Duration.between(ahora, localFechaFin)

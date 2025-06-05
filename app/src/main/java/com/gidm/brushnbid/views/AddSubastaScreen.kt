@@ -24,6 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.gidm.brushnbid.controllers.SubastaController
+import com.gidm.brushnbid.data.SubastaInput
+import com.gidm.brushnbid.data.UserPreferences
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 @Composable
 fun AddSubastaScreen(
@@ -31,16 +39,38 @@ fun AddSubastaScreen(
     onBack: () -> Unit,
     onSubmit: () -> Unit
 ) {
-    val selectedObra by navController.currentBackStackEntry
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    val subastaController = remember { SubastaController() }
+    var userId by remember { mutableStateOf<Int?>(null) }
+
+    val selectedObraIdFlow = navController
+        .currentBackStackEntry
         ?.savedStateHandle
         ?.getStateFlow<Int?>("obraId", null)
-        ?.collectAsState() ?: remember { mutableStateOf(null) }
+
+    val selectedObraId by selectedObraIdFlow?.collectAsState() ?: remember { mutableStateOf(null) }
+
+    val selectedObraTituloFlow = navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow<String?>("obraTitulo", null)
+
+    val selectedObraTitulo by selectedObraTituloFlow?.collectAsState() ?: remember { mutableStateOf(null) }
 
     var precioInicial by remember { mutableStateOf("") }
     var incremento by remember { mutableStateOf("") }
     var precioReserva by remember { mutableStateOf("") }
     var compraInmediata by remember { mutableStateOf("") }
-    var duracion by remember { mutableStateOf("") }
+    var duracionDias by remember { mutableStateOf<Int?>(null) }
+
+        val currentDate = remember {
+        LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    }
+
+    LaunchedEffect(Unit) {
+        userId = userPrefs.getUserId()
+    }
 
     Column(
         modifier = Modifier
@@ -89,8 +119,7 @@ fun AddSubastaScreen(
         ) {
             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    //text = selectedObra?.value?.titulo ?: "Seleccionar obra",
-                    text = "Seleccionar obra",
+                    text = selectedObraTitulo ?: "Seleccionar obra",
                     color = Color.Black,
                     fontSize = 16.sp,
                     lineHeight = 18.sp
@@ -101,7 +130,7 @@ fun AddSubastaScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Detalles de la subasta",
+            text = "Detalles de la subasta (opcionales)",
             fontSize = 14.sp,
             lineHeight = 16.sp,
             color = colorResource(R.color.main_color),
@@ -111,8 +140,8 @@ fun AddSubastaScreen(
         Spacer(modifier = Modifier.height(12.dp))
         InputOutlinedField("Precio inicial", precioInicial) { precioInicial = it }
         InputOutlinedField("Incremento", incremento) { incremento = it }
-        InputOutlinedField("Precio reserva", precioReserva) { precioReserva = it }
-        InputOutlinedField("Compra inmediata", compraInmediata) { compraInmediata = it }
+        InputOutlinedField("Precio de reserva", precioReserva) { precioReserva = it }
+        InputOutlinedField("Precio de compra inmediata", compraInmediata) { compraInmediata = it }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -134,58 +163,112 @@ fun AddSubastaScreen(
                         .padding(top = 4.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White)
+                        .background(colorResource(R.color.main_color))
                         .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
                         .padding(12.dp)
                 ) {
-                    Text("18/04/2025", color = colorResource(R.color.main_color))
+                    Text(
+                        text = currentDate,
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        lineHeight = 16.sp
+                    )
                 }
             }
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Duración",
+                    text = "Duración (días)",
                     fontSize = 14.sp,
                     lineHeight = 16.sp,
                     color = colorResource(R.color.main_color),
                     fontWeight = FontWeight.Medium
                 )
-                Box(
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .padding(top = 4.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(colorResource(R.color.main_color))
-                        .padding(12.dp)
+                        .background(Color.White)
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
                 ) {
-                    Text("00/00/0000", color = Color.White)
+                    Text(
+                        text = "–",
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .clickable {
+                                duracionDias = when {
+                                    duracionDias == null || duracionDias!! <= 1 -> null
+                                    else -> duracionDias!! - 1
+                                }
+                            }
+                            .padding(horizontal = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (duracionDias == null || duracionDias == 0) "---" else duracionDias.toString(),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.width(40.dp),
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "+",
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .clickable {
+                                duracionDias = when {
+                                    duracionDias == null || duracionDias == 0 -> 1
+                                    else -> duracionDias!! + 1
+                                }
+                            }
+                            .padding(horizontal = 8.dp)
+                    )
                 }
             }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        val allFieldsFilled = precioInicial.isNotBlank()
-                // && obra.isNotBlank()
-                // && incremento.isNotBlank()
-                //&& precioReserva.isNotBlank()
-                //&& compraInmediata.isNotBlank()
-                //&& duracion.isNotBlank()
-
         Button(
-            onClick = onSubmit,
-            enabled = allFieldsFilled,
+            onClick = {
+                val input = SubastaInput(
+                    obraId = selectedObraId ?: return@Button,
+                    vendedorId = userId ?: return@Button,
+                    precioInicial = precioInicial.toDoubleOrNull(),
+                    incremento = incremento.toDoubleOrNull(),
+                    precioReserva = precioReserva.toDoubleOrNull(),
+                    compraInmediata = compraInmediata.toDoubleOrNull(),
+                    duracion = if (duracionDias == null || duracionDias == 0) null else duracionDias
+                )
+
+                subastaController.createSubasta(
+                    subasta = input,
+                    onSuccess = {
+                        Toast.makeText(context, "Subasta creada con éxito", Toast.LENGTH_SHORT).show()
+                        onSubmit()
+                    },
+                    onError = {
+                        Toast.makeText(context, "Error al crear subasta: $it", Toast.LENGTH_LONG).show()
+                    }
+                )
+            },
+            enabled = selectedObraId != null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
+                containerColor = if (selectedObraId != null) Color.Black else colorResource(id = R.color.dark_gray)
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
                 text = "Añadir",
-                color = if (allFieldsFilled) Color.White else Color.Black
+                color = if (selectedObraId != null) Color.White else Color.Black
             )
         }
     }

@@ -82,6 +82,22 @@ class ObraController {
         })
     }
 
+    fun getObrasDisponiblesByUser(userId: Int, onSuccess: (List<Obra>) -> Unit, onError: (String) -> Unit) {
+        apiService.getObrasDisponiblesByUser(userId).enqueue(object : Callback<List<Obra>> {
+            override fun onResponse(call: Call<List<Obra>>, response: Response<List<Obra>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onError("Lista vacía")
+                } else {
+                    onError("Error código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<Obra>>, t: Throwable) {
+                onError(t.message ?: "Error desconocido")
+            }
+        })
+    }
+
     // Crear una nueva obra
     fun createObra(
         obra: ObraInput,

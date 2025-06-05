@@ -21,29 +21,52 @@ import androidx.compose.ui.unit.sp
 import com.gidm.brushnbid.R
 import com.gidm.brushnbid.data.ObraSummary
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.gidm.brushnbid.controllers.ObraController
 import com.gidm.brushnbid.data.Estado
+import com.gidm.brushnbid.data.UserPreferences
 import java.io.File
 
 @Composable
 fun SelectObraScreen(
     onBack: () -> Unit,
-    onObraSelected: (ObraSummary) -> Unit = {}
+    navController: NavController
 ) {
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    var obras by remember { mutableStateOf(listOf<ObraSummary>()) }
+    val obraController = remember { ObraController() }
 
-    val imgPath = "/data/data/com.gidm.brushnbid/files/obras/amanecer-abstracto.jpeg"
-    val misObras = listOf(
-        ObraSummary(1, "Ajedrez", Estado.ACTIVA, imgPath),
-        ObraSummary(2, "Taza de cerámica", Estado.ACTIVA, imgPath),
-        ObraSummary(3, "Jarrón de cerámica", Estado.ACTIVA, imgPath)
-    )
+    LaunchedEffect(Unit) {
+        val userId = userPrefs.getUserId()
+        if (userId != null) {
+            obraController.getObrasDisponiblesByUser(userId,
+                onSuccess = { listaObras ->
+                    obras = listaObras.map { obra ->
+                        ObraSummary(
+                            id = obra.id,
+                            titulo = obra.titulo,
+                            estado = Estado.DISPONIBLE,
+                            imagen = obra.imagen
+                        )
+                    }
+                },
+                onError = {
+                    obras = emptyList()
+                }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.app_background))
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -68,7 +91,8 @@ fun SelectObraScreen(
 
         Text(
             text = "Mis obras",
-            fontSize = 16.sp,
+            fontSize = 20.sp,
+            lineHeight = 22.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
         )
@@ -79,9 +103,14 @@ fun SelectObraScreen(
             horizontalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            items(misObras) { obra ->
+            items(obras) { obra ->
                 ObraCardItem(obra = obra) {
-                    onObraSelected(obra)
+                    navController.previousBackStackEntry?.savedStateHandle?.apply {
+                        set("obraId", obra.id)
+                        set("obraTitulo", obra.titulo)
+                    }
+                    navController.popBackStack()
+
                 }
             }
         }
@@ -121,5 +150,9 @@ fun ObraCardItem(obra: ObraSummary, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun SelectObraScreenPreview() {
-    SelectObraScreen(onBack = {})
+    val navController = rememberNavController()
+    SelectObraScreen(
+        onBack = {},
+        navController
+    )
 }

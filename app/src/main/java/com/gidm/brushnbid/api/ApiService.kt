@@ -62,6 +62,10 @@ interface ApiService {
     @GET("/obras/user/{id}")
     fun getObrasByUser(@Path("id") userId: Int): Call<List<Obra>>
 
+    // Obtener las obras disponibles de un usuario específico
+    @GET("/obras/disponibles/user/{id}")
+    fun getObrasDisponiblesByUser(@Path("id") userId: Int): Call<List<Obra>>
+
     // Crear una nueva obra
     @POST("/obras")
     fun createObra(@Body obra: ObraInput): Call<ObraInput>
@@ -101,7 +105,7 @@ interface ApiService {
 
     // Crear una nueva subasta
     @POST("/subastas")
-    fun createSubasta(@Body subasta: Subasta): Call<Subasta>
+    fun createSubasta(@Body subasta: SubastaInput): Call<SubastaInput>
 
     // Actualizar una subasta
     @PUT("/subastas/{id}")

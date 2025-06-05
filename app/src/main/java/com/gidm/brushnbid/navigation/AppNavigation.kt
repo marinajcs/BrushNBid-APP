@@ -196,12 +196,7 @@ fun AppNavigation(
         composable("selectObra") {
             SelectObraScreen(
                 onBack = { navController.popBackStack() },
-                onObraSelected = { obra ->
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("obraSeleccionada", obra)
-                    navController.popBackStack()
-                }
+                navController
             )
         }
     }

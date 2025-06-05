@@ -5,6 +5,7 @@ import com.gidm.brushnbid.api.ApiService
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInfo
+import com.gidm.brushnbid.data.SubastaInput
 import com.gidm.brushnbid.data.SubastaSummary
 import retrofit2.Call
 import retrofit2.Callback
@@ -100,12 +101,12 @@ class SubastaController {
 
     // Crear una nueva subasta
     fun createSubasta(
-        subasta: Subasta,
-        onSuccess: (Subasta) -> Unit,
+        subasta: SubastaInput,
+        onSuccess: (SubastaInput) -> Unit,
         onError: (String) -> Unit
     ) {
-        apiService.createSubasta(subasta).enqueue(object : Callback<Subasta> {
-            override fun onResponse(call: Call<Subasta>, response: Response<Subasta>) {
+        apiService.createSubasta(subasta).enqueue(object : Callback<SubastaInput> {
+            override fun onResponse(call: Call<SubastaInput>, response: Response<SubastaInput>) {
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) } ?: onError("Error al crear subasta")
                 } else {
@@ -113,7 +114,7 @@ class SubastaController {
                 }
             }
 
-            override fun onFailure(call: Call<Subasta>, t: Throwable) {
+            override fun onFailure(call: Call<SubastaInput>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

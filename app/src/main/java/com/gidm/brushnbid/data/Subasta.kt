@@ -13,10 +13,9 @@ data class Subasta(
     val id: Int,
     @SerializedName("obra_id") val obraId: Int,
     @SerializedName("vendedor_id") val vendedorId: Int,
-    @SerializedName("precio_inicial") val precioInicial: Double,
-    val incremento: Double,
+    @SerializedName("precio_inicial") val precioInicial: Double?,
+    val incremento: Double?,
     @SerializedName("precio_reserva") val precioReserva: Double?,
-    @SerializedName("fecha_inicio") val fechaInicio: String,
     val duracion: Int?,
     val adjudicado: Boolean
 )
@@ -26,6 +25,16 @@ data class SubastaInfo(
     @SerializedName("obra_nombre") val obraNombre: String,
     @SerializedName("vendedor_fullname") val vendedor: String,
     @SerializedName("puja_actual") val pujaActual: String,
-    @SerializedName("fecha_fin") val fechaFin: String,
+    @SerializedName("fecha_fin") val fechaFin: String?,
     @SerializedName("obra_imagen") val image: String
+)
+
+data class SubastaInput(
+    @SerializedName("obra_id") val obraId: Int,
+    @SerializedName("vendedor_id") val vendedorId: Int,
+    @SerializedName("precio_inicial") val precioInicial: Double?,
+    val incremento: Double?,
+    @SerializedName("precio_reserva") val precioReserva: Double?,
+    @SerializedName("compra_inmediata") val compraInmediata: Double?,
+    val duracion: Int?
 )

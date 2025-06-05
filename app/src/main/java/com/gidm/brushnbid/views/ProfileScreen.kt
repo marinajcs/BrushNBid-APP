@@ -74,7 +74,7 @@ fun ProfileScreen(navController: NavController) {
                             if (obra.autoriaId == userId && obra.propiedadId != userId)
                                 Estado.VENDIDA
                             else
-                                Estado.ACTIVA
+                                Estado.DISPONIBLE
                         ObraSummary(
                             id = obra.id,
                             titulo = obra.titulo,

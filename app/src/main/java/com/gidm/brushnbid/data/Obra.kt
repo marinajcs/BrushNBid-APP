@@ -22,7 +22,7 @@ data class ObraSummary(
 )
 
 enum class Estado{
-    ACTIVA, VENDIDA
+    DISPONIBLE, VENDIDA
 }
 
 data class ObraInfo(

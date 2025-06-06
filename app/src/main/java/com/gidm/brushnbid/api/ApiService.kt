@@ -9,6 +9,7 @@ import com.gidm.brushnbid.data.ObraSummary
 import com.gidm.brushnbid.data.Puja
 import com.gidm.brushnbid.data.PujaInfo
 import com.gidm.brushnbid.data.PujaInput
+import com.gidm.brushnbid.data.PujaRecomendada
 import com.gidm.brushnbid.data.Subasta
 import com.gidm.brushnbid.data.SubastaInfo
 import com.gidm.brushnbid.data.SubastaInput
@@ -134,4 +135,8 @@ interface ApiService {
     // Adjudicar la subasta al mejor postor
     @POST("/subastas/{id}/adjudicar")
     fun adjudicarSubasta(@Path("id") id: Int): Call<Void>
+
+    //------------------------------------------
+    @POST("/ml/recomendar-puja/{id}")
+    fun getPujaRecomendada(@Path("id") id: Int): Call<PujaRecomendada>
 }

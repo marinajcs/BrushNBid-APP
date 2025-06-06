@@ -2,7 +2,7 @@ package com.gidm.brushnbid.controllers
 
 import com.gidm.brushnbid.api.ApiClient
 import com.gidm.brushnbid.api.ApiService
-import com.gidm.brushnbid.data.Puja
+import com.gidm.brushnbid.data.PujaRecomendada
 import com.gidm.brushnbid.data.PujaInfo
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.data.Subasta
@@ -200,22 +200,23 @@ class SubastaController {
         })
     }
 
-    // Obtener las pujas de una subasta
-    fun getPujasBySubastaId(
-        id: Int,
-        onSuccess: (List<Puja>) -> Unit,
+    // Función para obtener la puja recomendada
+    fun getPujaRecomendada(
+        subastaId: Int,
+        onSuccess: (Double) -> Unit,
         onError: (String) -> Unit
     ) {
-        apiService.getPujasBySubastaId(id).enqueue(object : Callback<List<Puja>> {
-            override fun onResponse(call: Call<List<Puja>>, response: Response<List<Puja>>) {
+        apiService.getPujaRecomendada(subastaId).enqueue(object : Callback<PujaRecomendada> {
+            override fun onResponse(call: Call<PujaRecomendada>, response: Response<PujaRecomendada>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { onSuccess(it) } ?: onError("No hay pujas")
+                    response.body()?.let { onSuccess(it.recomendacion) }
+                        ?: onError("Respuesta vacía")
                 } else {
                     onError("Error código: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<Puja>>, t: Throwable) {
+            override fun onFailure(call: Call<PujaRecomendada>, t: Throwable) {
                 onError(t.message ?: "Error desconocido")
             }
         })

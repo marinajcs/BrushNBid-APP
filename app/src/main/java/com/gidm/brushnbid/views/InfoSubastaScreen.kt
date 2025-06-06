@@ -61,6 +61,9 @@ fun InfoSubastaScreen(
     val allFieldsFilled = cantidadPuja.trim().isNotEmpty()
     val isFinalizada = subasta?.adjudicado == true
 
+    var pujaRecomendada by remember { mutableStateOf<Double?>(null) }
+    var recomendacionError by remember { mutableStateOf<String?>(null) }
+
     LaunchedEffect(subastaId) {
         userId = userPrefs.getUserId()
         subastaController.getSubastaInfoById(
@@ -114,6 +117,18 @@ fun InfoSubastaScreen(
                 }
             },
             onError = { }
+        )
+
+        subastaController.getPujaRecomendada(
+            subastaId = subastaId,
+            onSuccess = { recomendacion ->
+                pujaRecomendada = recomendacion
+                recomendacionError = null
+            },
+            onError = { error ->
+                pujaRecomendada = null
+                recomendacionError = error
+            }
         )
     }
 
@@ -332,6 +347,26 @@ fun InfoSubastaScreen(
                         fontSize = 14.sp,
                         lineHeight = 16.sp,
                         modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(7.dp))
+
+                if (pujaRecomendada != null && !isFinalizada) {
+                    Text(
+                        text = "Puja recomendada: %.2f €".format(pujaRecomendada),
+                        color = colorResource(id = R.color.main_color),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 8.dp, bottom = 8.dp)
+                    )
+                } else if (recomendacionError != null && !isFinalizada) {
+                    Text(
+                        text = "No se pudo obtener la puja recomendada",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
 

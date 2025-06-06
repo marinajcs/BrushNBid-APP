@@ -19,3 +19,8 @@ data class PujaInfo(
     val cantidad: Double,
     val fecha: String
 )
+
+data class PujaRecomendada(
+    val recomendacion: Double,
+    val mensaje: String?
+)

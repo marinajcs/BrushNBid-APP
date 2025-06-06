@@ -433,6 +433,18 @@ fun InfoSubastaScreen(
                                         onSuccess = { info -> subasta = info },
                                         onError = { errorMessage = "No se pudo actualizar la subasta" }
                                     )
+
+                                    subastaController.getPujaRecomendada(
+                                        subastaId = id,
+                                        onSuccess = { recomendacion ->
+                                            pujaRecomendada = recomendacion
+                                            recomendacionError = null
+                                        },
+                                        onError = { error ->
+                                            pujaRecomendada = null
+                                            recomendacionError = error
+                                        }
+                                    )
                                 },
                                 onError = {
                                     errorMessage = it

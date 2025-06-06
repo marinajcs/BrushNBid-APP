@@ -158,11 +158,9 @@ fun SubastaListItem(id: Int, img: String, title: String, author: String,
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                if (!isFinalizada) Modifier.clickable {
-                    navController.navigate("infoSubasta/${id}")
-                } else Modifier
-            )
+            .clickable {
+                navController.navigate("infoSubasta/${id}")
+            }
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -40,6 +40,8 @@ import java.time.Duration
 import java.util.Locale
 import com.gidm.brushnbid.data.PujaInput
 import com.gidm.brushnbid.util.parseUtcToLocal
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 
 @Composable
 fun InfoSubastaScreen(
@@ -57,6 +59,7 @@ fun InfoSubastaScreen(
 
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val allFieldsFilled = cantidadPuja.trim().isNotEmpty()
+    val isFinalizada = subasta?.adjudicado == true
 
     LaunchedEffect(subastaId) {
         userId = userPrefs.getUserId()
@@ -127,10 +130,13 @@ fun InfoSubastaScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                val grayScaleFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
+
                 if (subasta?.image?.isNotBlank() == true && File(subasta!!.image).exists()) {
                     AsyncImage(
                         model = File(subasta!!.image),
                         contentDescription = "Imagen de obra",
+                        colorFilter = if (isFinalizada) grayScaleFilter else null,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(350.dp)
@@ -151,7 +157,7 @@ fun InfoSubastaScreen(
                 Text(
                     text = subasta?.vendedor ?: "Autoría",
                     fontSize = 14.sp,
-                    color = colorResource(id = R.color.main_color)
+                    color = if (isFinalizada) Color.Gray else colorResource(id = R.color.main_color)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -249,6 +255,7 @@ fun InfoSubastaScreen(
 
                     OutlinedTextField(
                         value = cantidadPuja,
+                        enabled = !isFinalizada,
                         onValueChange = {
                             if (it.matches(Regex("^\\d{0,7}(\\.\\d{0,2})?$"))) {
                                 cantidadPuja = it
@@ -287,30 +294,41 @@ fun InfoSubastaScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Temporizador
-                if (subasta?.fechaFin != null) {
-                    Text(
-                        text = String.format(
-                            Locale.getDefault(),
-                            "%02d:%02d:%02d",
-                            horas,
-                            minutos,
-                            segundos
-                        ),
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        fontSize = 16.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = colorResource(id = R.color.main_color)
-                    )
-                } else {
-                    Text(
-                        text = "Sin fecha de finalización",
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        fontSize = 16.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Gray
-                    )
+                when {
+                    isFinalizada -> {
+                        Text(
+                            text = "Subasta finalizada. Felicidades, ${subasta?.mejorPostor}",
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            fontSize = 14.sp,
+                            lineHeight = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Red
+                        )
+                    }
+                    subasta?.fechaFin != null -> {
+                        Text(
+                            text = String.format(
+                                Locale.getDefault(),
+                                "%02d:%02d:%02d",
+                                horas,
+                                minutos,
+                                segundos
+                            ),
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(id = R.color.main_color)
+                        )
+                    }
+                    else -> {
+                        Text(
+                            text = "Sin fecha de finalización",
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Gray
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -352,7 +370,7 @@ fun InfoSubastaScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (allFieldsFilled) Color.Black else colorResource(id = R.color.dark_gray)
                     ),
-                    enabled = allFieldsFilled
+                    enabled = allFieldsFilled && !isFinalizada
                 ) {
                     Text(
                         "Pujar",

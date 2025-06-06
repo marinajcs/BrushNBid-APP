@@ -27,7 +27,9 @@ data class SubastaInfo(
     @SerializedName("vendedor_fullname") val vendedor: String,
     @SerializedName("puja_actual") val pujaActual: String,
     @SerializedName("fecha_fin") val fechaFin: String?,
-    @SerializedName("obra_imagen") val image: String
+    @SerializedName("obra_imagen") val image: String,
+    val adjudicado: Boolean,
+    @SerializedName("mejor_postor") val mejorPostor: String
 )
 
 data class SubastaInput(

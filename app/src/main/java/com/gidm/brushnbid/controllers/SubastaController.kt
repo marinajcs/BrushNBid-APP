@@ -256,4 +256,25 @@ class SubastaController {
             }
         })
     }
+
+    // Adjudicar la subasta al mejor postor
+    fun adjudicarSubasta(
+        subastaId: Int,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        apiService.adjudicarSubasta(subastaId).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error al adjudicar la subasta. Código: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                onError("Error en la conexión: ${t.message}")
+            }
+        })
+    }
 }

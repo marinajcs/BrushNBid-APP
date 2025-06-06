@@ -1,6 +1,5 @@
 package com.gidm.brushnbid.api
 
-import com.gidm.brushnbid.data.Adjudicacion
 import com.gidm.brushnbid.data.LoginRequest
 import com.gidm.brushnbid.data.LoginResponse
 import com.gidm.brushnbid.data.Obra

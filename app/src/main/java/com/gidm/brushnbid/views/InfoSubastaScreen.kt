@@ -68,25 +68,52 @@ fun InfoSubastaScreen(
             onSuccess = { info ->
                 subasta = info
 
-                // Si hay fecha de fin, inicia temporizador
-                info.fechaFin?.let { fechaFinUtc ->
-                    val localFechaFin = parseUtcToLocal(fechaFinUtc)
-                    val ahora = LocalDateTime.now()
-                    val duracion = Duration.between(ahora, localFechaFin)
-                    object : CountDownTimer(duracion.toMillis(), 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                            tiempoRestante = Duration.ofMillis(millisUntilFinished)
-                        }
+                if (!isFinalizada) {
+                    // Si hay fecha de fin, inicia temporizador
+                    info.fechaFin?.let { fechaFinUtc ->
+                        val localFechaFin = parseUtcToLocal(fechaFinUtc)
+                        val ahora = LocalDateTime.now()
+                        val duracion = Duration.between(ahora, localFechaFin)
+                        object : CountDownTimer(duracion.toMillis(), 1000) {
+                            override fun onTick(millisUntilFinished: Long) {
+                                tiempoRestante = Duration.ofMillis(millisUntilFinished)
+                            }
 
-                        override fun onFinish() {
-                            tiempoRestante = Duration.ZERO
-                        }
-                    }.start()
+                            override fun onFinish() {
+                                tiempoRestante = Duration.ZERO
+
+                                subastaController.adjudicarSubasta(
+                                    subastaId = subastaId,
+                                    onSuccess = {
+                                        Toast.makeText(
+                                            context,
+                                            "Subasta adjudicada",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        subastaController.getSubastaInfoById(
+                                            id = subastaId,
+                                            onSuccess = { updatedSubasta ->
+                                                subasta = updatedSubasta
+                                            },
+                                            onError = {
+                                                errorMessage = "No se pudo actualizar la subasta"
+                                            }
+                                        )
+                                    },
+                                    onError = {
+                                        Toast.makeText(
+                                            context,
+                                            "Error al adjudicar la subasta",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                )
+                            }
+                        }.start()
+                    }
                 }
             },
-            onError = {
-                // Manejar error
-            }
+            onError = { }
         )
     }
 
@@ -228,6 +255,17 @@ fun InfoSubastaScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                if (subasta?.compraInmediata != null) {
+                    Text(
+                        text = "Compra inmediata disponible por ${subasta?.compraInmediata}€",
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.main_color)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
                 // Botones de puja
                 Row(
                     modifier = Modifier
@@ -262,7 +300,12 @@ fun InfoSubastaScreen(
                             }
                         },
                         label = {
-                            Text("¿Cuánto pujar?", fontSize = 16.sp)
+                            Text(
+                                text = "¿Cuánto pujar?",
+                                fontSize = 16.sp,
+                                lineHeight = 18.sp,
+                                color = colorResource(id = R.color.main_color)
+                            )
                         },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
@@ -287,6 +330,7 @@ fun InfoSubastaScreen(
                         text = errorMessage!!,
                         color = Color.Red,
                         fontSize = 14.sp,
+                        lineHeight = 16.sp,
                         modifier = Modifier.padding(start = 4.dp, top = 4.dp)
                     )
                 }
@@ -302,7 +346,7 @@ fun InfoSubastaScreen(
                             fontSize = 14.sp,
                             lineHeight = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Red
+                            color = colorResource(id = R.color.main_color)
                         )
                     }
                     subasta?.fechaFin != null -> {

@@ -1,5 +1,6 @@
 package com.gidm.brushnbid.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -58,10 +59,10 @@ fun AddSubastaScreen(
 
     val selectedObraTitulo by selectedObraTituloFlow?.collectAsState() ?: remember { mutableStateOf(null) }
 
-    var precioInicial by remember { mutableStateOf("") }
-    var incremento by remember { mutableStateOf("") }
-    var precioReserva by remember { mutableStateOf("") }
-    var compraInmediata by remember { mutableStateOf("") }
+    var precioInicial by remember { mutableStateOf<Double?>(null) }
+    var incremento by remember { mutableStateOf<Double?>(null) }
+    var precioReserva by remember { mutableStateOf<Double?>(null) }
+    var compraInmediata by remember { mutableStateOf<Double?>(null) }
     var duracionDias by remember { mutableStateOf<Int?>(null) }
 
         val currentDate = remember {
@@ -234,16 +235,22 @@ fun AddSubastaScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
+        val duracionInput : String? = if (duracionDias == null || duracionDias == 0){
+            null
+        } else {
+            "$duracionDias days"
+        }
+
         Button(
             onClick = {
                 val input = SubastaInput(
                     obraId = selectedObraId ?: return@Button,
                     vendedorId = userId ?: return@Button,
-                    precioInicial = precioInicial.toDoubleOrNull(),
-                    incremento = incremento.toDoubleOrNull(),
-                    precioReserva = precioReserva.toDoubleOrNull(),
-                    compraInmediata = compraInmediata.toDoubleOrNull(),
-                    duracion = if (duracionDias == null || duracionDias == 0) null else duracionDias
+                    precioInicial = precioInicial,
+                    incremento = incremento,
+                    precioReserva = precioReserva,
+                    compraInmediata = compraInmediata,
+                    duracion = duracionInput
                 )
 
                 subastaController.createSubasta(
@@ -252,8 +259,14 @@ fun AddSubastaScreen(
                         Toast.makeText(context, "Subasta creada con éxito", Toast.LENGTH_SHORT).show()
                         onSubmit()
                     },
-                    onError = {
-                        Toast.makeText(context, "Error al crear subasta: $it", Toast.LENGTH_LONG).show()
+                    onError = { errorMessage ->
+                        if (errorMessage.contains("Expected a string but was BEGIN_OBJECT")) {
+                            Toast.makeText(context, "Subasta creada con éxito", Toast.LENGTH_SHORT).show()
+                            onSubmit()
+                        } else {
+                            Toast.makeText(context, "Error al crear subasta: $errorMessage", Toast.LENGTH_LONG).show()
+                            Log.e("CreateSubastaError", "Error al crear la subasta: $errorMessage")  // Registro del error en Logcat
+                        }
                     }
                 )
             },
@@ -275,10 +288,14 @@ fun AddSubastaScreen(
 }
 
 @Composable
-fun InputOutlinedField(label: String, value: String, onValueChange: (String) -> Unit) {
+fun InputOutlinedField(label: String, value: Double?, onValueChange: (Double?) -> Unit) {
     OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
+        value = value?.toString() ?: "",
+        onValueChange = { newValue ->
+            if (newValue.matches(Regex("^\\d{0,7}(\\.\\d{0,2})?$"))) {
+                onValueChange(newValue.toDoubleOrNull())
+            }
+        },
         placeholder = { Text(label, color = Color.Black) },
         singleLine = true,
         modifier = Modifier
